@@ -7,7 +7,7 @@ import {
 
 const NodeContainer = (props) => {
   const {
-    item, classes, render, onClick, direction, children, round,
+    item, classes, render, onClick, direction, children, round, addNode
   } = props;
   return (
     <Node id={item.id} styles={classes.lines}>
@@ -24,9 +24,12 @@ const NodeContainer = (props) => {
         )
 
         : (
-          <Wrapper styles={classes.node} onClick={() => onClick(item)}>
-            <Text styles={classes.text}>{item.name}</Text>
-          </Wrapper>
+          <React.Fragment>
+            <Wrapper styles={classes.node} onClick={() => onClick(item)}>
+              <Text styles={classes.text}>{item.name}</Text>
+            </Wrapper>
+            <div onClick={() => addNode(item.id)}>+</div>
+          </React.Fragment>
         )
     }
       { children }
