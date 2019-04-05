@@ -9,6 +9,7 @@ const NodeContainer = (props) => {
   const {
     item, classes, render, onClick, direction, children, round,
   } = props;
+  console.log(children);
   return (
     <Node id={item.id} styles={classes.lines}>
       { round && <Round color={classes.lines.color} /> }
