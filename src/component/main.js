@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import NodeContainer from './node';
-import { Root } from './styles';
+import { Root, Wrapper, Text } from './styles';
 
 const data = [
   {id: 'a1', name: 'homepage', parent: null, children: [
@@ -19,15 +19,20 @@ class Main extends Component {
     super();
     this.addNode = this.addNode.bind(this);
     this._pushNewObject = this._pushNewObject.bind(this);
+    this.reduceNode = this.reduceNode.bind(this);
+    this._cutObject = this._cutObject.bind(this);
+    this.addCBlock = this.addCBlock.bind(this);
+    this.deleteCBlock = this.deleteCBlock.bind(this);
     this.state = {
-      data: data
+      data: data,
+      cBlock: [],
+      cBlockNum: 0
     };
   }
   addNode(targetId) {
     const root = [ ...this.state.data ];
     this._pushNewObject(root, targetId);
     this.setState({data: root});
-    console.log(this.state.data);
   }
   _pushNewObject(root, targetId) {
     if (root instanceof Array) {
@@ -57,6 +62,63 @@ class Main extends Component {
       }
     }
   }
+  reduceNode(targetId) {
+    const root = [ ...this.state.data ];
+    this._cutObject(root, targetId);
+    this.setState({data: root});
+  }
+  _cutObject(root, targetId) {
+    if (root instanceof Array) {
+      for (var i = 0; i < root.length; i++) {
+        this._cutObject(root[i], targetId);
+      }
+    }
+    else {
+      for (var prop in root) {
+        if (prop === 'id') {
+          if (root[prop] === targetId) {
+            // if find the target id on the nest object set the children to an empty array
+            root.children = [];
+          }
+        }
+        if (prop === 'children') {
+          if (root[prop].length > 0) {
+            for (var j = 0; j < root[prop].length; j++) {
+              this._cutObject(root[prop][j], targetId);
+            }
+          }
+        }
+      }
+    }
+  }
+  addCBlock() {
+    var block = this.state.cBlock;
+    var num = this.state.cBlockNum;
+    if (num !== 0) {
+      var blockId = num + 1;
+    } else {
+      var blockId = num;
+    }
+    this.setState({
+      cBlock: [
+        ...block,
+        {
+          id: num,
+          name: `Component${num}`
+        }],
+      cBlockNum: num + 1
+    })
+  }
+  deleteCBlock(targetId) {
+    var block = this.state.cBlock;
+    for (var i = 0; i < block.length; i++) {
+      if (block[i].id === targetId) {
+        block.splice(i, 1);
+      }
+    }
+    this.setState({cBlock: block});
+  }
+
 
   render() {
     const renderTree = (tree, multiChild) => {
@@ -78,6 +140,7 @@ class Main extends Component {
                 direction={direction}
                 round={multiChild}
                 addNode={this.addNode}
+                reduceNode={this.reduceNode}
               >
                 {branch.children.length > 0 && renderTree(branch.children, nextWithSingleChild)}
               </NodeContainer>
@@ -87,8 +150,21 @@ class Main extends Component {
       );
     };
 
-    return renderTree(this.state.data, false);
-  }
+    return (
+      <React.Fragment>
+        {renderTree(this.state.data, false)}
+        <div className='controller-block'>
+          <div onClick={this.addCBlock}>add c-block</div>
+          {this.state.cBlock.map((block,index) =>
+            <Wrapper key={index} styles={this.props.classes.node}>
+              <Text styles={this.props.classes.text}>{block.name}</Text>
+              <div onClick={(id) => this.deleteCBlock(block.id)}>Delete</div>
+            </Wrapper>
+          )}
+        </div>
+      </React.Fragment>
+    );
+  };
 }
 
 Main.propTypes = {

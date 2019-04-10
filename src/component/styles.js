@@ -2,14 +2,13 @@ import styled from 'styled-components';
 import { calcWidth } from './utils';
 
 export const Wrapper = styled.div`
-  border: 1px solid red;
-  background-color: purple;
   display: inline-block;
   z-index: 135;
   margin-top: 2px;
   padding: 10px 20px;
   color: white;
   border-radius: 8px;
+  background-color: #1890ff;
   box-shadow: 0 2px 0 rgba(0,0,0,0.045);
   &:hover{
     cursor: pointer;
@@ -18,18 +17,16 @@ export const Wrapper = styled.div`
 `;
 
 export const Round = styled.div`
-  border: 1px solid pink;
   position: absolute;
   width: 6px;
   height: 6px;
-  border: 2px solid  ${props => props.color || 'pink'};
+  border: 2px solid  ${props => props.color || '#d6e2ea'};
   background-color: #fff;
   left: calc( 50% - 5px );
   top: -3px;
   border-radius: 3px;
 `;
 export const Node = styled.li`
-  border: 1px solid green;
   float: left;
   text-align: center;
   list-style-type: none;
@@ -40,31 +37,31 @@ export const Node = styled.li`
     position: absolute;
     top: 0;
     right:  calc( 50% - ${props => calcWidth(props.styles.width)});
-    border-top: 4px solid pink;
+    border-top: ${props => props.styles.width || '2px'} solid ${props => props.styles.color || '#d6e2ea'} ;
     width: 50%;
     height: ${props => (props.styles ? props.styles.height : '40px')};
     z-index: -1;
   }
   ::after{
     left: calc( 50% - ${props => calcWidth(props.styles.width)});
-    border-left: 5px solid red;
+    border-left: ${props => props.styles.width || '2px'} solid ${props => props.styles.color || '#d6e2ea'};
     content: '';
     position: absolute;
     top: 0;
-    right: calc( 50% - ${props => calcWidth(props.styles.width)});
-    border-top: 4px solid orange;
+    //right: calc( 50% - ${props => calcWidth(props.styles.width)});
+    border-top: ${props => props.styles.width || '2px'} solid ${props => props.styles.color || '#d6e2ea'};
     width: 50%;
     height: ${props => (props.styles ? props.styles.height : '40px')};
     z-index: -1;
   }
   &:first-child::before{
-    border: none;
+    border: 0 none;
   }
   &:last-child::after{
-    border: none;
+  border : none
   }
 &:last-child::before{
-  border-right: 5px solid lime;
+  border-right: ${props => props.styles.width || '2px'} solid ${props => props.styles.color || '#d6e2ea'};
 }
 &:only-child{
   padding-top : 0px;
@@ -78,14 +75,13 @@ export const Node = styled.li`
 `;
 
 export const Arrow = styled.span`
-  border: solid  black ;
+  border: solid  ${props => (props.color ? props.color : '#d6e2ea')} ;
   border-width: 0 2px 2px 0;
   display: inline-block;
   padding: 3px;
   left: calc( 50% - 4px );
   margin-top: -7px;
   position: absolute;
-
   transform: rotate(45deg);
 `;
 
@@ -112,7 +108,7 @@ export const Root = styled.ul`
     position: absolute;
     top: 0;
     left: calc( 50% - ${props => calcWidth(props.styles.width)});
-    border-left: 5px solid blue;
+    border-left: ${props => props.styles.width || '2px'} solid ${props => props.styles.color || '#d6e2ea'};
     width: 0;
     height: ${props => props.styles.height || '40px'};
   }

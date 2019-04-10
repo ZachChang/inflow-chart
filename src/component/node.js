@@ -7,7 +7,7 @@ import {
 
 const NodeContainer = (props) => {
   const {
-    item, classes, render, onClick, direction, children, round, addNode
+    item, classes, render, onClick, direction, children, round, addNode, reduceNode
   } = props;
   console.log(children);
   return (
@@ -30,6 +30,7 @@ const NodeContainer = (props) => {
               <Text styles={classes.text}>{item.name}</Text>
             </Wrapper>
             <div onClick={() => addNode(item.id)}>+</div>
+            <div onClick={() => reduceNode(item.id)}>-</div>
           </React.Fragment>
         )
     }
