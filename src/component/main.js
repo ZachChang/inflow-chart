@@ -21,12 +21,10 @@ class Main extends Component {
     this._pushNewObject = this._pushNewObject.bind(this);
     this.reduceNode = this.reduceNode.bind(this);
     this._cutObject = this._cutObject.bind(this);
-    this.addCBlock = this.addCBlock.bind(this);
-    this.deleteCBlock = this.deleteCBlock.bind(this);
+    this.onClickBlock = this.onClickBlock.bind(this);
     this.state = {
       data: data,
-      cBlock: [],
-      cBlockNum: 0
+      clickNodeStatus: {}
     };
   }
   addNode(targetId) {
@@ -109,21 +107,15 @@ class Main extends Component {
       cBlockNum: num + 1
     })
   }
-  deleteCBlock(targetId) {
-    var block = this.state.cBlock;
-    for (var i = 0; i < block.length; i++) {
-      if (block[i].id === targetId) {
-        block.splice(i, 1);
-      }
-    }
-    this.setState({cBlock: block});
+  onClickBlock(item) {
+    this.setState({clickNodeStatus: item});
   }
 
 
   render() {
     const renderTree = (tree, multiChild) => {
       const {
-        classes, render, onClick, direction,
+        classes, render, direction,
       } = this.props;
       const { lines } = classes;
       return (
@@ -134,7 +126,7 @@ class Main extends Component {
               <NodeContainer
                 item={branch}
                 key={branch.id}
-                onClick={onClick}
+                onClick={(item) => this.onClickBlock(item)}
                 classes={{ ...classes }}
                 render={render}
                 direction={direction}
@@ -151,25 +143,25 @@ class Main extends Component {
     };
 
     return (
-      <React.Fragment>
-        {renderTree(this.state.data, false)}
-        <div className='controller-block'>
-          <div onClick={this.addCBlock}>add c-block</div>
-          {this.state.cBlock.map((block,index) =>
-            <Wrapper key={index} styles={this.props.classes.node}>
-              <Text styles={this.props.classes.text}>{block.name}</Text>
-              <div onClick={(id) => this.deleteCBlock(block.id)}>Delete</div>
-            </Wrapper>
-          )}
+      <div className='main-container'>
+        <div className='right-container'>
+          {renderTree(this.state.data, false)}
         </div>
-      </React.Fragment>
+        <div className='left-container'>
+          {this.state.clickNodeStatus.id ?
+            <React.Fragment>
+              <div>id: {this.state.clickNodeStatus.id}</div>
+              <div>name: {this.state.clickNodeStatus.name}</div>
+            </React.Fragment> : null
+          }
+        </div>
+      </div>
     );
   };
 }
 
 Main.propTypes = {
   classes: PropTypes.objectOf(PropTypes.object),
-  // data: PropTypes.arrayOf(PropTypes.object).isRequired,
   render: PropTypes.func,
   onClick: PropTypes.func,
   direction: PropTypes.bool,
@@ -186,7 +178,6 @@ Main.defaultProps = {
     arrow: {},
   },
   render: null,
-  onClick: null,
   direction: false,
 };
 

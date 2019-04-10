@@ -1,0 +1,15 @@
+.main-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+}
+.right-container {
+  padding: 50px 10px;
+  width: 70%;
+  overflow-x: scroll;
+}
+.left-container {
+  padding: 50px 10px;
+  width: 30%;
+  border-left: 1px solid gray;
+}
