@@ -20,7 +20,8 @@ class Main extends Component {
     this.addNode = this.addNode.bind(this);
     this._pushNewObject = this._pushNewObject.bind(this);
     this.state = {
-      data: data
+      data: data,
+      clickNodeStatus: {}
     };
   }
   addNode(targetId) {
@@ -57,11 +58,13 @@ class Main extends Component {
       }
     }
   }
-
+  onClickBlock(item) {
+    this.setState({clickNodeStatus: item});
+  }
   render() {
     const renderTree = (tree, multiChild) => {
       const {
-        classes, render, onClick, direction,
+        classes, render, direction,
       } = this.props;
       const { lines } = classes;
       return (
@@ -72,7 +75,7 @@ class Main extends Component {
               <NodeContainer
                 item={branch}
                 key={branch.id}
-                onClick={onClick}
+                onClick={(item) => this.onClickBlock(item)}
                 classes={{ ...classes }}
                 render={render}
                 direction={direction}
@@ -87,13 +90,26 @@ class Main extends Component {
       );
     };
 
-    return renderTree(this.state.data, false);
-  }
+    return (
+      <div className='main-container'>
+        <div className='right-container'>
+          {renderTree(this.state.data, false)}
+        </div>
+        <div className='left-container'>
+          {this.state.clickNodeStatus.id ?
+            <React.Fragment>
+              <div>id: {this.state.clickNodeStatus.id}</div>
+              <div>name: {this.state.clickNodeStatus.name}</div>
+            </React.Fragment> : null
+          }
+        </div>
+      </div>
+    );
+  };
 }
 
 Main.propTypes = {
   classes: PropTypes.objectOf(PropTypes.object),
-  // data: PropTypes.arrayOf(PropTypes.object).isRequired,
   render: PropTypes.func,
   onClick: PropTypes.func,
   direction: PropTypes.bool,
@@ -110,7 +126,6 @@ Main.defaultProps = {
     arrow: {},
   },
   render: null,
-  onClick: null,
   direction: false,
 };
 

@@ -1,15 +1,14 @@
 import styled from 'styled-components';
+import Button from '@material-ui/core/Button';
 import { calcWidth } from './utils';
 
-export const Wrapper = styled.div`
+export const Wrapper = styled(Button)`
   display: inline-block;
   z-index: 135;
   margin-top: 2px;
   padding: 10px 20px;
+  background: #039be5;
   color: white;
-  border-radius: 8px;
-  background-color: #1890ff;
-  box-shadow: 0 2px 0 rgba(0,0,0,0.045);
   &:hover{
     cursor: pointer;
   }

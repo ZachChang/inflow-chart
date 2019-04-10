@@ -3,8 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^3.9.3",
+    "jss": "^9.8.7",
     "react": "^16.8.5",
     "react-dom": "^16.8.5",
+    "react-jss": "^8.6.1",
     "react-scripts": "2.1.8",
     "styled-components": "^4.2.0"
   },
