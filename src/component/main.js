@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import NodeContainer from './node';
-import { Root, Wrapper, Text } from './styles';
+import { Root } from './styles';
+import RightContainer from './rightContainer';
+import ConnectModal from './connectModal';
 
 const data = [
-  {id: 'a1', name: 'homepage', parent: null, children: [
-    {id: 'b1', parent: {id: 'a1'}, name: 'page01', children: []},
-    {id: 'b2', parent: {id: 'a1'}, name: 'page02', children: [
-      {id: 'c1', parent: {id: 'b2'}, name: 'page02-1', children: []}
+  {id: 'a1', name: 'homepage', parent: null, type: 'p', children: [
+    {id: 'b1', parent: {id: 'a1'}, name: 'page01', type: 'p', children: []},
+    {id: 'b2', parent: {id: 'a1'}, name: 'page02', type: 'p', children: [
+      {id: 'c1', parent: {id: 'b2'}, name: 'page02-1', type: 'p', children: []}
     ]},
-    {id: 'b3', parent: {id: 'a1'}, name: 'page03', children: []},
-    {id:'b4', parent: {id: 'a1'}, name: 'page04', children: []}
+    {id: 'b3', parent: {id: 'a1'}, name: 'page03', type: 'p', children: []},
+    {id:'b4', parent: {id: 'a1'}, name: 'page04', type: 'p', children: []}
   ]}
 ];
 
@@ -19,99 +21,136 @@ class Main extends Component {
     super();
     this.addNode = this.addNode.bind(this);
     this._pushNewObject = this._pushNewObject.bind(this);
-    this.reduceNode = this.reduceNode.bind(this);
+    this.deleteNode = this.deleteNode.bind(this);
     this._cutObject = this._cutObject.bind(this);
     this.onClickBlock = this.onClickBlock.bind(this);
+    this.connect = this.connect.bind(this);
+    this.closeConnectModal = this.closeConnectModal.bind(this);
+    this.toggleComponent = this.toggleComponent.bind(this);
+
     this.state = {
       data: data,
-      clickNodeStatus: {}
+      events: [],
+      components: [],
+      clickNodeStatus: data[0],
+      connectModalOpen: false,
+      checkedComponent: [],
     };
   }
-  addNode(targetId) {
+  addNode(type) {
+    const targetId = this.state.clickNodeStatus.id
     const root = [ ...this.state.data ];
-    this._pushNewObject(root, targetId);
+    this._pushNewObject(root, targetId, type);
     this.setState({data: root});
   }
-  _pushNewObject(root, targetId) {
+  _pushNewObject(root, targetId, type) {
     if (root instanceof Array) {
       for (var i = 0; i < root.length; i++) {
-        this._pushNewObject(root[i], targetId);
+        this._pushNewObject(root[i], targetId, type);
       }
     }
     else {
       for (var prop in root) {
         if (prop === 'id') {
           if (root[prop] === targetId) {
-            root.children.push({
-              id: Date.now(),
-              name: Date.now(),
-              parent: {id: root.id},
-              children: []
-            });
+            const dataset = (type) => {
+              return ({
+                id: Date.now(),
+                name: type + Date.now(),
+                parent: {id: root.id},
+                children: [],
+                type: type
+              });
+            };
+            switch (type) {
+              case 'p':
+                root.children.push(dataset('p'));
+                break;
+              case 'e':
+                root.children.push(dataset('e'));
+                this.setState(prevState => ({events: [ ...prevState.events, dataset('e') ] }));
+                break;
+              case 'c':
+                root.children.push(dataset('c'));
+                this.setState(prevState => ({components: [ ...prevState.components, dataset('c') ] }));
+                break;
+              default:
+                root.children.push({
+                  id: Date.now(),
+                  name: 'P' + Date.now(),
+                  parent: {id: root.id},
+                  children: [],
+                  type: 'p'
+                });
+            }
           }
         }
         if (prop === 'children') {
           if (root[prop].length > 0) {
             for (var j = 0; j < root[prop].length; j++) {
-              this._pushNewObject(root[prop][j], targetId);
+              this._pushNewObject(root[prop][j], targetId, type);
             }
           }
         }
       }
     }
   }
-  reduceNode(targetId) {
+  deleteNode() {
+    const targetId = this.state.clickNodeStatus.id;
+    const targetParent =  this.state.clickNodeStatus.parent.id;
     const root = [ ...this.state.data ];
-    this._cutObject(root, targetId);
-    this.setState({data: root});
+    this._cutObject(root, targetId, targetParent);
+    this.setState({data: root, clickNodeStatus: null});
   }
-  _cutObject(root, targetId) {
+  _cutObject(root, targetId, targetParent) {
     if (root instanceof Array) {
       for (var i = 0; i < root.length; i++) {
-        this._cutObject(root[i], targetId);
+        this._cutObject(root[i], targetId, targetParent);
       }
     }
     else {
       for (var prop in root) {
         if (prop === 'id') {
-          if (root[prop] === targetId) {
-            // if find the target id on the nest object set the children to an empty array
-            root.children = [];
+          if (root[prop] === targetParent) {
+            let index = root.children.map( child => { return child.id;}).indexOf(targetId);
+            root.children.splice(index, 1);
           }
         }
         if (prop === 'children') {
           if (root[prop].length > 0) {
             for (var j = 0; j < root[prop].length; j++) {
-              this._cutObject(root[prop][j], targetId);
+              this._cutObject(root[prop][j], targetId, targetParent);
             }
           }
         }
       }
     }
-  }
-  addCBlock() {
-    var block = this.state.cBlock;
-    var num = this.state.cBlockNum;
-    if (num !== 0) {
-      var blockId = num + 1;
-    } else {
-      var blockId = num;
-    }
-    this.setState({
-      cBlock: [
-        ...block,
-        {
-          id: num,
-          name: `Component${num}`
-        }],
-      cBlockNum: num + 1
-    })
   }
   onClickBlock(item) {
     this.setState({clickNodeStatus: item});
   }
+  connect() {
+    this.setState({connectModalOpen: true});
+  }
+  closeConnectModal() {
+    this.setState({connectModalOpen: false});
+  }
+  toggleComponent(name) {
+    const { checkedComponent } = this.state;
+    const currentIndex = checkedComponent.indexOf(name);
+    const newChecked = [...checkedComponent];
 
+    if (currentIndex === -1) {
+      newChecked.push(name);
+      // get the position of this component in DOM
 
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+    this.setState({
+      checkedComponent: newChecked,
+    });
+  }
   render() {
     const renderTree = (tree, multiChild) => {
       const {
@@ -131,8 +170,7 @@ class Main extends Component {
                 render={render}
                 direction={direction}
                 round={multiChild}
-                addNode={this.addNode}
-                reduceNode={this.reduceNode}
+                selectedID={this.state.clickNodeStatus ? this.state.clickNodeStatus.id : 0}
               >
                 {branch.children.length > 0 && renderTree(branch.children, nextWithSingleChild)}
               </NodeContainer>
@@ -144,17 +182,28 @@ class Main extends Component {
 
     return (
       <div className='main-container'>
-        <div className='right-container'>
+        <div className='left-container'>
           {renderTree(this.state.data, false)}
         </div>
-        <div className='left-container'>
-          {this.state.clickNodeStatus.id ?
-            <React.Fragment>
-              <div>id: {this.state.clickNodeStatus.id}</div>
-              <div>name: {this.state.clickNodeStatus.name}</div>
-            </React.Fragment> : null
+        <div className='right-container'>
+          {this.state.clickNodeStatus ?
+            <RightContainer
+              item={this.state.clickNodeStatus}
+              checkedC={this.state.checkedComponent}
+              addNode={this.addNode}
+              connect={this.connect}
+              deleteNode={this.deleteNode}
+            /> : null
           }
         </div>
+        <ConnectModal
+          open={this.state.connectModalOpen}
+          alert={this.state.components.length < 1}
+          handleClose={this.closeConnectModal}
+          components={this.state.components}
+          checked={this.state.checkedComponent}
+          toggleCheck={this.toggleComponent}
+         />
       </div>
     );
   };

@@ -1,15 +1,31 @@
 .main-container {
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
 }
-.right-container {
-  padding: 50px 10px;
-  width: 70%;
-  overflow-x: scroll;
-}
 .left-container {
-  padding: 50px 10px;
-  width: 30%;
+  width: 80%;
+  height: 100vh;
+  overflow-x: scroll;
+  overflow-y: scroll;
+}
+.right-container {
+  padding: 30px 10px;
+  width: 20%;
   border-left: 1px solid gray;
 }
+.button-container {
+  display: flex;
+  margin: 20px 0;
+  flex-direction: column;
+}
+.add-button {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.54);
+  margin-bottom: 10px;
+  padding: 15px 0;
+  letter-spacing: 2px;
+}
+.page-color { background-color: #b3e5fc; }
+.event-color { background-color: #ffe0b2; }
+.component-color { background-color: #c8e6c9; }

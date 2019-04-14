@@ -2,17 +2,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Wrapper, Text, Node, Arrow, Round,
+  PageWrapper, EventWrapper, ComponentWrapper, Text, Node, Arrow,
 } from './styles';
 
 const NodeContainer = (props) => {
   const {
-    item, classes, render, onClick, direction, children, round, addNode, reduceNode
+    item, classes, render, onClick, direction, children, selectedID
   } = props;
-  console.log(children);
   return (
     <Node id={item.id} styles={classes.lines}>
-      { round && <Round color={classes.lines.color} /> }
       { direction && item.parent && <Arrow color={classes.lines.color} /> }
       {
       typeof render === 'function'
@@ -26,11 +24,26 @@ const NodeContainer = (props) => {
 
         : (
           <React.Fragment>
-            <Wrapper styles={classes.node} onClick={() => onClick(item)}>
-              <Text styles={classes.text}>{item.name}</Text>
-            </Wrapper>
-            <div onClick={() => addNode(item.id)}>+</div>
-            <div onClick={() => reduceNode(item.id)}>-</div>
+            {(() => {
+              switch (item.type) {
+                case 'p':
+                  return  <PageWrapper type={item.type} id={item.id} selected={selectedID} styles={classes.node} onClick={() => onClick(item)}>
+                            <Text styles={classes.text}>{item.name}</Text>
+                          </PageWrapper>;
+                case 'e':
+                  return  <EventWrapper type={item.type} id={item.id} selected={selectedID} styles={classes.node} onClick={() => onClick(item)}>
+                            <Text styles={classes.text}>{item.name}</Text>
+                          </EventWrapper>;
+                case 'c':
+                  return  <ComponentWrapper type={item.type} id={item.id} selected={selectedID} styles={classes.node} onClick={() => onClick(item)}>
+                            <Text styles={classes.text}>{item.name}</Text>
+                          </ComponentWrapper>;
+                default:
+                  return  <PageWrapper type={item.type} id={item.id} selected={selectedID} styles={classes.node} onClick={() => onClick(item)}>
+                            <Text styles={classes.text}>{item.name}</Text>
+                          </PageWrapper>;
+              }
+            })()}
           </React.Fragment>
         )
     }

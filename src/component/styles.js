@@ -1,18 +1,65 @@
-import styled from 'styled-components';
+import styled, { css }  from 'styled-components';
 import Button from '@material-ui/core/Button';
 import { calcWidth } from './utils';
 
-export const Wrapper = styled(Button)`
+export const PageWrapper = styled(Button)`
   display: inline-block;
   z-index: 135;
   margin-top: 2px;
-  padding: 10px 20px;
-  background: #039be5;
-  color: white;
+  padding: 10px 10px;
+  background: #b3e5fc;
+  color: rgba(0, 0, 0, 0.54);
   &:hover{
     cursor: pointer;
+    background: #e3f2fd;
   }
-  ${props => (props.styles ? { ...props.styles } : '')};
+  ${props => props.id === props.selected && css`
+    background: #039be5;
+    color: white;
+    &:hover {
+      background: #81d4fa;
+    }
+  `}
+`;
+
+export const EventWrapper = styled(Button)`
+  display: inline-block;
+  z-index: 135;
+  margin-top: 2px;
+  padding: 10px 10px;
+  background: #ffe0b2;
+  color: rgba(0, 0, 0, 0.54);
+  &:hover{
+    cursor: pointer;
+    background: #e3f2fd;
+  }
+  ${props => props.id === props.selected && css`
+    background: #ef6c00;
+    color: white;
+    &:hover {
+      background: #e65100;
+    }
+  `}
+`;
+
+export const ComponentWrapper = styled(Button)`
+  display: inline-block;
+  z-index: 135;
+  margin-top: 2px;
+  padding: 10px 10px;
+  background: #c8e6c9;
+  color: rgba(0, 0, 0, 0.54);
+  &:hover{
+    cursor: pointer;
+    background: #e8f5e9;
+  }
+  ${props => props.id === props.selected && css`
+    background: #43a047;
+    color: white;
+    &:hover {
+      background: #388e3c;
+    }
+  `}
 `;
 
 export const Round = styled.div`
@@ -87,7 +134,7 @@ export const Arrow = styled.span`
 export const Text = styled.span`
   font-family: 'Open Sans', sans-serif;
   color: '#fff';
-  font-size: 15px;
+  font-size: 12px;
   ${props => (props.styles ? { ...props.styles } : '')};
 `;
 
