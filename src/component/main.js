@@ -4,6 +4,7 @@ import NodeContainer from './node';
 import { Root } from './styles';
 import RightContainer from './rightContainer';
 import ConnectModal from './connectModal';
+import { _detect } from './utils';
 
 const data = [
   {id: 'a1', name: 'homepage', parent: null, type: 'p', children: [
@@ -135,14 +136,15 @@ class Main extends Component {
   closeConnectModal() {
     this.setState({connectModalOpen: false});
   }
-  toggleComponent(name) {
+  toggleComponent(item) {
     const { checkedComponent } = this.state;
-    const currentIndex = checkedComponent.indexOf(name);
+    const currentIndex = checkedComponent.indexOf(item.name);
     const newChecked = [...checkedComponent];
 
     if (currentIndex === -1) {
-      newChecked.push(name);
+      newChecked.push(item.name);
       // get the position of this component in DOM
+      _detect(this.state.clickNodeStatus.id, item.id);
 
     } else {
       newChecked.splice(currentIndex, 1);

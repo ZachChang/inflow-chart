@@ -33,7 +33,7 @@ const ConnectModal = (props) => {
           <DialogContent>
             <List>
               {props.components.map((item, index) => (
-                <ListItem key={index} role={undefined} dense button onClick={() => {props.toggleCheck(item.name)}}>
+                <ListItem key={index} role={undefined} dense button onClick={() => {props.toggleCheck(item)}}>
                   <Checkbox
                     checked={props.checked.indexOf(item.name) !== -1}
                     tabIndex={-1}
