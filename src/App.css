@@ -5,6 +5,7 @@
 }
 .left-container {
   width: 80%;
+  min-width: 300px;
   height: 100vh;
   overflow-x: scroll;
   overflow-y: scroll;
@@ -25,6 +26,9 @@
   margin-bottom: 10px;
   padding: 15px 0;
   letter-spacing: 2px;
+}
+.svg-container {
+  position: absolute;
 }
 .page-color { background-color: #b3e5fc; }
 .event-color { background-color: #ffe0b2; }

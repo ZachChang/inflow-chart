@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import NodeContainer from './node';
-import { Root } from './styles';
 import RightContainer from './rightContainer';
+import LeftContainer from './leftContainer';
 import ConnectModal from './connectModal';
 import { _detect } from './utils';
 
@@ -154,39 +153,16 @@ class Main extends Component {
     });
   }
   render() {
-    const renderTree = (tree, multiChild) => {
-      const {
-        classes, render, direction,
-      } = this.props;
-      const { lines } = classes;
-      return (
-        <Root styles={lines}>
-          {tree.map((branch) => {
-            const nextWithSingleChild = branch.children.length > 1;
-            return (
-              <NodeContainer
-                item={branch}
-                key={branch.id}
-                onClick={(item) => this.onClickBlock(item)}
-                classes={{ ...classes }}
-                render={render}
-                direction={direction}
-                round={multiChild}
-                selectedID={this.state.clickNodeStatus ? this.state.clickNodeStatus.id : 0}
-              >
-                {branch.children.length > 0 && renderTree(branch.children, nextWithSingleChild)}
-              </NodeContainer>
-            );
-          })}
-        </Root>
-      );
-    };
-
     return (
       <div className='main-container'>
-        <div className='left-container'>
-          {renderTree(this.state.data, false)}
-        </div>
+        <LeftContainer
+          classes={this.props.classes}
+          render={this.props.render}
+          direction={this.props.direction}
+          data={this.state.data}
+          clickNodeStatus={this.state.clickNodeStatus}
+          onClickBlock={(item) => this.onClickBlock(item)}
+        />
         <div className='right-container'>
           {this.state.clickNodeStatus ?
             <RightContainer
