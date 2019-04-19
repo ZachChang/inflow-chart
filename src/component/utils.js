@@ -20,12 +20,13 @@ export const _detect = (from, to) => {
   const fromBox = fromElement.getBoundingClientRect();
   const toBox = toElement.getBoundingClientRect();
 
-  const x0 = fromBox.left + fromBox.width * 0.5;
-  const y0 = fromBox.top + fromBox.height;
-  const x1 = toBox.left + toBox.width * 0.5;
-  const y1 = toBox.top + toBox.height;
+  let offsetX = window.pageXOffset;
+  let offsetY = window.pageYOffset;
 
-  console.log({x0,y0,x1,y1});
+  const x0 = fromBox.left + fromBox.width * 0.5 + offsetX;
+  const y0 = fromBox.top + fromBox.height + offsetY - 16;
+  const x1 = toBox.left + toBox.width * 0.5 + offsetX;
+  const y1 = toBox.top + toBox.height + offsetY - 16;
 
   return {x0, y0, x1, y1};
 };

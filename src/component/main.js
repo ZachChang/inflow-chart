@@ -35,6 +35,7 @@ class Main extends Component {
       clickNodeStatus: data[0],
       connectModalOpen: false,
       checkedComponent: [],
+      pathSet: []
     };
   }
   addNode(type) {
@@ -143,7 +144,11 @@ class Main extends Component {
     if (currentIndex === -1) {
       newChecked.push(item.name);
       // get the position of this component in DOM
-      _detect(this.state.clickNodeStatus.id, item.id);
+      const currentPathSet = this.state.pathSet;
+      const newPath = _detect(this.state.clickNodeStatus.id, item.id);
+      this.setState({ pathSet: [ ...currentPathSet, newPath]})
+
+      console.log(this.state.pathSet);
 
     } else {
       newChecked.splice(currentIndex, 1);
@@ -162,6 +167,7 @@ class Main extends Component {
           data={this.state.data}
           clickNodeStatus={this.state.clickNodeStatus}
           onClickBlock={(item) => this.onClickBlock(item)}
+          pathSet={this.state.pathSet}
         />
         <div className='right-container'>
           {this.state.clickNodeStatus ?
