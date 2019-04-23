@@ -23,10 +23,10 @@ export const _detect = (from, to) => {
   let offsetX = window.pageXOffset;
   let offsetY = window.pageYOffset;
 
-  const x0 = fromBox.left + fromBox.width * 0.5 + offsetX;
-  const y0 = fromBox.top + fromBox.height + offsetY - 16;
-  const x1 = toBox.left + toBox.width * 0.5 + offsetX;
-  const y1 = toBox.top + toBox.height + offsetY - 16;
+  const x0 = fromBox.left + fromBox.width * 0.5 - 35;
+  const y0 = fromBox.top + fromBox.height - 16;
+  const x1 = toBox.left + toBox.width * 0.5 - 35;
+  const y1 = toBox.top + toBox.height - 16;
 
   return {x0, y0, x1, y1};
 };

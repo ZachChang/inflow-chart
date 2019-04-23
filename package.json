@@ -8,6 +8,7 @@
     "d3": "^5.9.2",
     "jss": "^9.8.7",
     "react": "^16.8.5",
+    "react-archer": "^1.1.0",
     "react-dom": "^16.8.5",
     "react-jss": "^8.6.1",
     "react-scripts": "2.1.8",

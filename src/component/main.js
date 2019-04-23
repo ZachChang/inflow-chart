@@ -55,9 +55,11 @@ class Main extends Component {
         if (prop === 'id') {
           if (root[prop] === targetId) {
             const dataset = (type) => {
+              var dateCode = Date.now().toString();
               return ({
-                id: Date.now(),
-                name: type + Date.now(),
+                // slice the Date.now to pretent the id is the same in root and components array
+                id: dateCode.slice(0, 11),
+                name: type + dateCode.slice(0, 11),
                 parent: {id: root.id},
                 children: [],
                 type: type
@@ -146,10 +148,10 @@ class Main extends Component {
       // get the position of this component in DOM
       const currentPathSet = this.state.pathSet;
       const newPath = _detect(this.state.clickNodeStatus.id, item.id);
+      console.log('this.state.clickNodeStatus.id', this.state.clickNodeStatus.id);
+      console.log('item.id', item.id);
+      console.log('newPath', newPath);
       this.setState({ pathSet: [ ...currentPathSet, newPath]})
-
-      console.log(this.state.pathSet);
-
     } else {
       newChecked.splice(currentIndex, 1);
     }

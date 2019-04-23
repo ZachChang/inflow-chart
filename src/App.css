@@ -29,7 +29,12 @@
 }
 .svg-container {
   position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
+.test { position: absolute;}
 .page-color { background-color: #b3e5fc; }
 .event-color { background-color: #ffe0b2; }
 .component-color { background-color: #c8e6c9; }
