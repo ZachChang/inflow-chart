@@ -14,31 +14,40 @@ class NodeContainer extends Component {
     this.svg = d3.select(this.refs.linecanvas)
       .append('svg')
       .attr('class', 'svg-container')
-      // .attr('width', w)
-      // .attr('height', h);
-
-      this._renderLine();
   }
   componentDidUpdate() {
-    this._renderLine();
+    const pathSet = this.props.pathSet;
+    for (var i = 0; i < pathSet.length; i++) {
+      this._renderLine(pathSet[i]);
+    }
   }
-  _renderLine() {
+  _renderLine(path) {
     const sl = this.props.scrollLeft;
     const st = this.props.scrollTop;
-    const dataset = this.props.pathSet.map( path => ({ x0: path.x0 + sl, y0: path.y0 + st, x1: path.x1 + sl, y1: path.y1 + st}));
 
-    console.log({dataset});
+    var data = {
+      source: {
+        x: path.x0 + sl,
+        y: path.y0 + st
+      },
+      target: {
+        x: path.x1 + sl,
+        y: path.y1 + st
+      }
+    };
 
-    // bind data
-    let path = this.svg.selectAll('path').data(dataset);
-    let enter = path.enter();
+    // draw the curve link
+    var link = d3.linkVertical()
+      .x(function(d) {
+        return d.x;
+      })
+      .y(function(d) {
+        return d.y;
+      });
 
-    // Enter
-    path.enter()
-      .append('path')
-      .attr('d', d => 'M' + (d.x0).toString() + ' ' + (d.y0).toString() + ' ' + 'L' + (d.x1).toString() + ' ' + (d.y1).toString())
-      .attr('stroke', 'black')
-      .attr('stroke-width', '5px');
+    this.svg.append("path")
+        .attr("d", link(data))
+        .attr('class', 'link-path')
   }
   render() {
     return (
