@@ -5,10 +5,6 @@ import { Root } from './styles';
 class LeftContainer extends Component {
   constructor() {
     super();
-    this.kobe = this.kobe.bind(this);
-  }
-  kobe() {
-    console.log(this.refs.postionBase.scrollLeft, this.refs.postionBase.scrollTop);
   }
   render() {
     const renderTree = (tree, multiChild) => {
@@ -33,6 +29,12 @@ class LeftContainer extends Component {
                 pathSet={this.props.pathSet}
                 scrollLeft={this.refs.postionBase ? this.refs.postionBase.scrollLeft : 0}
                 scrollTop={this.refs.postionBase ? this.refs.postionBase.scrollTop ? this.refs.postionBase.scrollTop : 0 : 0}
+
+                // for connect modal
+                connectModalOpen={this.props.connectModalOpen}
+                closeConnectModal={this.props.closeConnectModal}
+                components={this.props.components}
+                clickNodeStatus={this.props.clickNodeStatus}
               >
                 {branch.children.length > 0 && renderTree(branch.children, nextWithSingleChild)}
               </NodeContainer>
@@ -42,9 +44,9 @@ class LeftContainer extends Component {
       );
     };
     return (
-      <div className='left-container' id='linecanvas' ref='postionBase'>
-        {renderTree(this.props.data, false)}
-      </div>
+        <div className='left-container' id='linecanvas' ref='postionBase'>
+          {renderTree(this.props.data, false)}
+        </div>
     );
   }
 }

@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import RightContainer from './rightContainer';
 import LeftContainer from './leftContainer';
-import ConnectModal from './connectModal';
-import { _detect } from './utils';
 
 const data = [
   {id: 'a1', name: 'homepage', parent: null, type: 'p', children: [
@@ -24,9 +22,8 @@ class Main extends Component {
     this.deleteNode = this.deleteNode.bind(this);
     this._cutObject = this._cutObject.bind(this);
     this.onClickBlock = this.onClickBlock.bind(this);
-    this.connect = this.connect.bind(this);
+    this.toggleConnect = this.toggleConnect.bind(this);
     this.closeConnectModal = this.closeConnectModal.bind(this);
-    this.toggleComponent = this.toggleComponent.bind(this);
 
     this.state = {
       data: data,
@@ -34,8 +31,7 @@ class Main extends Component {
       components: [],
       clickNodeStatus: data[0],
       connectModalOpen: false,
-      checkedComponent: [],
-      pathSet: []
+      checkedComponent: []
     };
   }
   addNode(type) {
@@ -132,32 +128,11 @@ class Main extends Component {
   onClickBlock(item) {
     this.setState({clickNodeStatus: item});
   }
-  connect() {
+  toggleConnect() {
     this.setState({connectModalOpen: true});
   }
   closeConnectModal() {
     this.setState({connectModalOpen: false});
-  }
-  toggleComponent(item) {
-    const { checkedComponent } = this.state;
-    const currentIndex = checkedComponent.indexOf(item.name);
-    const newChecked = [...checkedComponent];
-
-    if (currentIndex === -1) {
-      newChecked.push(item.name);
-      // get the position of this component in DOM
-      const currentPathSet = this.state.pathSet;
-      const newPath = _detect(this.state.clickNodeStatus.id, item.id);
-      console.log('this.state.clickNodeStatus.id', this.state.clickNodeStatus.id);
-      console.log('item.id', item.id);
-      console.log('newPath', newPath);
-      this.setState({ pathSet: [ ...currentPathSet, newPath]})
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-    this.setState({
-      checkedComponent: newChecked,
-    });
   }
   render() {
     return (
@@ -169,7 +144,12 @@ class Main extends Component {
           data={this.state.data}
           clickNodeStatus={this.state.clickNodeStatus}
           onClickBlock={(item) => this.onClickBlock(item)}
-          pathSet={this.state.pathSet}
+
+          // for connect modal
+          connectModalOpen={this.state.connectModalOpen}
+          closeConnectModal={this.closeConnectModal}
+          components={this.state.components}
+          clickNodeStatus={this.state.clickNodeStatus}
         />
         <div className='right-container'>
           {this.state.clickNodeStatus ?
@@ -177,24 +157,15 @@ class Main extends Component {
               item={this.state.clickNodeStatus}
               checkedC={this.state.checkedComponent}
               addNode={this.addNode}
-              connect={this.connect}
+              connect={this.toggleConnect}
               deleteNode={this.deleteNode}
             /> : null
           }
         </div>
-        <ConnectModal
-          open={this.state.connectModalOpen}
-          alert={this.state.components.length < 1}
-          handleClose={this.closeConnectModal}
-          components={this.state.components}
-          checked={this.state.checkedComponent}
-          toggleCheck={this.toggleComponent}
-         />
       </div>
     );
   };
 }
-
 Main.propTypes = {
   classes: PropTypes.objectOf(PropTypes.object),
   render: PropTypes.func,

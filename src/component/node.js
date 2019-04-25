@@ -1,22 +1,30 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  PageWrapper, EventWrapper, ComponentWrapper, Text, Node, Arrow,
-} from './styles';
+import { PageWrapper, EventWrapper, ComponentWrapper, Text, Node, Arrow } from './styles';
 import * as d3 from 'd3';
+import ConnectModal from './connectModal';
+import { _detect } from './utils';
 
 class NodeContainer extends Component {
+  constructor() {
+    super();
+    this.toggleComponent = this.toggleComponent.bind(this);
+    this.state = {
+      checkedComponent: [],
+      pathSet: []
+    };
+  }
   componentDidMount() {
-    const w = document.getElementById('a1').clientWidth;
-    const h = document.getElementById('a1').clientHeight;
+    // const w = document.getElementById('a1').clientWidth;
+    // const h = document.getElementById('a1').clientHeight;
 
     this.svg = d3.select(this.refs.linecanvas)
       .append('svg')
       .attr('class', 'svg-container')
   }
   componentDidUpdate() {
-    const pathSet = this.props.pathSet;
+    const pathSet = this.state.pathSet;
     for (var i = 0; i < pathSet.length; i++) {
       this._renderLine(pathSet[i]);
     }
@@ -25,6 +33,7 @@ class NodeContainer extends Component {
     const sl = this.props.scrollLeft;
     const st = this.props.scrollTop;
 
+    console.log({sl, st});
     var data = {
       source: {
         x: path.x0 + sl,
@@ -36,9 +45,9 @@ class NodeContainer extends Component {
       }
     };
 
+    var link = path.y0 === path.y1 ? d3.linkHorizontal() : d3.linkVertical();
     // draw the curve link
-    var link = d3.linkVertical()
-      .x(function(d) {
+    link.x(function(d) {
         return d.x;
       })
       .y(function(d) {
@@ -49,48 +58,78 @@ class NodeContainer extends Component {
         .attr("d", link(data))
         .attr('class', 'link-path')
   }
+  toggleComponent(item) {
+    const { checkedComponent } = this.state;
+    const currentIndex = checkedComponent.indexOf(item.name);
+    const newChecked = [...checkedComponent];
+
+    if (currentIndex === -1) {
+      newChecked.push(item.name);
+      // get the position of this component in DOM
+      const currentPathSet = this.state.pathSet;
+      const newPath = _detect(this.props.clickNodeStatus.id, item.id);
+      // console.log('this.state.clickNodeStatus.id', this.state.clickNodeStatus.id);
+      // console.log('item.id', item.id);
+      // console.log('newPath', newPath);
+      this.setState({ pathSet: [ ...currentPathSet, newPath]})
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+    this.setState({
+      checkedComponent: newChecked,
+    });
+  }
   render() {
     return (
-      <Node id={this.props.item.id} styles={this.props.classes.lines} ref={this.props.item.id === 'a1' ? 'linecanvas' : null}>
-        { this.props.direction && this.props.item.parent && <Arrow color={this.props.classes.lines.color} /> }
-        {
-        typeof this.props.render === 'function'
-          ? React.cloneElement(
-            this.props.render(this.props.item),
-            {
-              onClick: () => this.props.onClick(this.props.item),
-              styles: this.props.classes.node,
-            },
-          )
+      <React.Fragment>
+        <Node styles={this.props.classes.lines} ref={this.props.item.id === 'a1' ? 'linecanvas' : null}>
+          { this.props.direction && this.props.item.parent && <Arrow color={this.props.classes.lines.color} /> }
+          {
+          typeof this.props.render === 'function'
+            ? React.cloneElement(
+              this.props.render(this.props.item),
+              {
+                onClick: () => this.props.onClick(this.props.item),
+                styles: this.props.classes.node,
+              },
+            )
 
-          : (
-            <React.Fragment>
-              {(() => {
-                switch (this.props.item.type) {
-                  case 'p':
-                    return  <PageWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectedID} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
-                              <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
-                            </PageWrapper>;
-                  case 'e':
-                    return  <EventWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectedID} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
-                              <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
-                            </EventWrapper>;
-                  case 'c':
-                    return  <ComponentWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectedID} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
-                              <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
-                            </ComponentWrapper>;
-                  default:
-                    return  <PageWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectedID} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
-                              <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
-                            </PageWrapper>;
-                }
-              })()}
-            </React.Fragment>
-          )
-      }
-        { this.props.children }
-      </Node>
-
+            : (
+              <React.Fragment>
+                {(() => {
+                  switch (this.props.item.type) {
+                    case 'p':
+                      return  <PageWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectedID} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
+                                <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
+                              </PageWrapper>;
+                    case 'e':
+                      return  <EventWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectedID} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
+                                <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
+                              </EventWrapper>;
+                    case 'c':
+                      return  <ComponentWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectedID} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
+                                <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
+                              </ComponentWrapper>;
+                    default:
+                      return  <PageWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectedID} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
+                                <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
+                              </PageWrapper>;
+                  }
+                })()}
+              </React.Fragment>
+            )
+        }
+          { this.props.children }
+        </Node>
+        <ConnectModal
+          open={this.props.connectModalOpen}
+          alert={this.props.components.length < 1}
+          handleClose={this.props.closeConnectModal}
+          components={this.props.components}
+          checked={this.state.checkedComponent}
+          toggleCheck={this.toggleComponent}
+        />
+      </React.Fragment>
     );
   }
 }
