@@ -3,37 +3,28 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { PageWrapper, EventWrapper, ComponentWrapper, Text, Node, Arrow } from './styles';
 import * as d3 from 'd3';
-import ConnectModal from './connectModal';
-import { _detect } from './utils';
 
 class NodeContainer extends Component {
-  constructor() {
-    super();
-    this.toggleComponent = this.toggleComponent.bind(this);
-    this.state = {
-      checkedComponent: [],
-      pathSet: []
-    };
-  }
   componentDidMount() {
-    // const w = document.getElementById('a1').clientWidth;
-    // const h = document.getElementById('a1').clientHeight;
-
     this.svg = d3.select(this.refs.linecanvas)
       .append('svg')
       .attr('class', 'svg-container')
   }
   componentDidUpdate() {
-    const pathSet = this.state.pathSet;
+    const pathSet = this.props.events.map( e => {
+      return e.pathSet;
+    });
     for (var i = 0; i < pathSet.length; i++) {
-      this._renderLine(pathSet[i]);
+      for (var k = 0; k < pathSet[i].length; k++) {
+        this._renderLine(pathSet[i][k]);
+      }
     }
   }
   _renderLine(path) {
     const sl = this.props.scrollLeft;
     const st = this.props.scrollTop;
 
-    console.log({sl, st});
+    console.log({path});
     var data = {
       source: {
         x: path.x0 + sl,
@@ -57,27 +48,6 @@ class NodeContainer extends Component {
     this.svg.append("path")
         .attr("d", link(data))
         .attr('class', 'link-path')
-  }
-  toggleComponent(item) {
-    const { checkedComponent } = this.state;
-    const currentIndex = checkedComponent.indexOf(item.name);
-    const newChecked = [...checkedComponent];
-
-    if (currentIndex === -1) {
-      newChecked.push(item.name);
-      // get the position of this component in DOM
-      const currentPathSet = this.state.pathSet;
-      const newPath = _detect(this.props.clickNodeStatus.id, item.id);
-      // console.log('this.state.clickNodeStatus.id', this.state.clickNodeStatus.id);
-      // console.log('item.id', item.id);
-      // console.log('newPath', newPath);
-      this.setState({ pathSet: [ ...currentPathSet, newPath]})
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-    this.setState({
-      checkedComponent: newChecked,
-    });
   }
   render() {
     return (
@@ -121,14 +91,6 @@ class NodeContainer extends Component {
         }
           { this.props.children }
         </Node>
-        <ConnectModal
-          open={this.props.connectModalOpen}
-          alert={this.props.components.length < 1}
-          handleClose={this.props.closeConnectModal}
-          components={this.props.components}
-          checked={this.state.checkedComponent}
-          toggleCheck={this.toggleComponent}
-        />
       </React.Fragment>
     );
   }

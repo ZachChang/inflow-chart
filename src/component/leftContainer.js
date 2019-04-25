@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import NodeContainer from './node';
+import NodeContainer from './nodeContainer';
 import { Root } from './styles';
 
 class LeftContainer extends Component {
-  constructor() {
-    super();
-  }
   render() {
     const renderTree = (tree, multiChild) => {
       const {
@@ -26,15 +23,9 @@ class LeftContainer extends Component {
                 direction={direction}
                 round={multiChild}
                 selectedID={this.props.clickNodeStatus ? this.props.clickNodeStatus.id : 0}
-                pathSet={this.props.pathSet}
+                events={this.props.events}
                 scrollLeft={this.refs.postionBase ? this.refs.postionBase.scrollLeft : 0}
                 scrollTop={this.refs.postionBase ? this.refs.postionBase.scrollTop ? this.refs.postionBase.scrollTop : 0 : 0}
-
-                // for connect modal
-                connectModalOpen={this.props.connectModalOpen}
-                closeConnectModal={this.props.closeConnectModal}
-                components={this.props.components}
-                clickNodeStatus={this.props.clickNodeStatus}
               >
                 {branch.children.length > 0 && renderTree(branch.children, nextWithSingleChild)}
               </NodeContainer>

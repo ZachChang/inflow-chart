@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import RightContainer from './rightContainer';
 import LeftContainer from './leftContainer';
+import ConnectModal from './connectModal';
+import { _detect } from './utils';
 
 const data = [
   {id: 'a1', name: 'homepage', parent: null, type: 'p', children: [
@@ -24,6 +26,7 @@ class Main extends Component {
     this.onClickBlock = this.onClickBlock.bind(this);
     this.toggleConnect = this.toggleConnect.bind(this);
     this.closeConnectModal = this.closeConnectModal.bind(this);
+    this.toggleComponent = this.toggleComponent.bind(this);
 
     this.state = {
       data: data,
@@ -50,37 +53,41 @@ class Main extends Component {
       for (var prop in root) {
         if (prop === 'id') {
           if (root[prop] === targetId) {
-            const dataset = (type) => {
-              var dateCode = Date.now().toString();
+            const dataset = (type, id) => {
               return ({
-                // slice the Date.now to pretent the id is the same in root and components array
-                id: dateCode.slice(0, 11),
-                name: type + dateCode.slice(0, 11),
+                id: id,
+                name: type + id,
                 parent: {id: root.id},
                 children: [],
                 type: type
               });
             };
+            const eventset = (id) => {
+              return ({
+                id: id,
+                name: 'e' + id,
+                connects: [],
+                pathSet: []
+              });
+            };
+
             switch (type) {
               case 'p':
-                root.children.push(dataset('p'));
+                var dateCode = Date.now().toString();
+                root.children.push(dataset('p', dateCode));
                 break;
               case 'e':
-                root.children.push(dataset('e'));
-                this.setState(prevState => ({events: [ ...prevState.events, dataset('e') ] }));
+                var dateCode = Date.now().toString();
+                root.children.push(dataset('e', dateCode));
+                this.setState(prevState => ({events: [ ...prevState.events, eventset(dateCode) ] }));
                 break;
               case 'c':
-                root.children.push(dataset('c'));
-                this.setState(prevState => ({components: [ ...prevState.components, dataset('c') ] }));
+                var dateCode = Date.now().toString();
+                root.children.push(dataset('c', dateCode));
+                this.setState(prevState => ({components: [ ...prevState.components, dataset('c', dateCode) ] }));
                 break;
               default:
-                root.children.push({
-                  id: Date.now(),
-                  name: 'P' + Date.now(),
-                  parent: {id: root.id},
-                  children: [],
-                  type: 'p'
-                });
+                return null;
             }
           }
         }
@@ -98,8 +105,16 @@ class Main extends Component {
     const targetId = this.state.clickNodeStatus.id;
     const targetParent =  this.state.clickNodeStatus.parent.id;
     const root = [ ...this.state.data ];
+    // delete node in root data
     this._cutObject(root, targetId, targetParent);
-    this.setState({data: root, clickNodeStatus: null});
+    const newevents = this.state.events.filter( e => {
+      return e.id !== targetId;
+    });
+    const newcomponents = this.state.components.filter( c => {
+      return c.id !== targetId;
+    });
+
+    this.setState({data: root, events: newevents, components: newcomponents, clickNodeStatus: null});
   }
   _cutObject(root, targetId, targetParent) {
     if (root instanceof Array) {
@@ -126,6 +141,12 @@ class Main extends Component {
     }
   }
   onClickBlock(item) {
+    if (item.type==='e') {
+      const component = this.state.events.filter(e => {
+        return e.id === item.id;
+      })[0].connects;
+      this.setState({checkedComponent: component});
+    }
     this.setState({clickNodeStatus: item});
   }
   toggleConnect() {
@@ -133,6 +154,44 @@ class Main extends Component {
   }
   closeConnectModal() {
     this.setState({connectModalOpen: false});
+  }
+  toggleComponent(item) {
+    const { checkedComponent } = this.state;
+    const eventId = this.state.clickNodeStatus.id;
+    const eventIndex = this.state.events.map(e => {
+      return e.id;
+    }).indexOf(eventId);
+    const currentIndex = checkedComponent.indexOf(item.name);
+    const newConnects = [...this.state.events[eventIndex].connects];
+    const currentPathSet = [...this.state.events[eventIndex].pathSet];
+
+    if (currentIndex === -1) {
+      newConnects.push(item.name);
+      // get the position of this component in DOM
+      const newPath = _detect(this.state.clickNodeStatus.id, item.id);
+      const newevents = this.state.events.map(e => {
+        if (e.id===eventId) {
+          return ({ ...e, connects: [...newConnects], pathSet: [ ...currentPathSet, newPath]});
+        } else {
+          return ({ ...e});
+        }
+      });
+
+      this.setState({events: newevents, checkedComponent: newConnects});
+    }
+    else {
+      newConnects.splice(currentIndex, 1);
+      currentPathSet.splice(currentIndex, 1);
+      const newevents = this.state.events.map(e => {
+        if (e.id===eventId) {
+          return ({ ...e, connects: [...newConnects], pathSet: [ ...currentPathSet]});
+        } else {
+          return ({ ...e});
+        }
+      });
+
+      this.setState({events: newevents, checkedComponent: newConnects});
+    }
   }
   render() {
     return (
@@ -144,24 +203,25 @@ class Main extends Component {
           data={this.state.data}
           clickNodeStatus={this.state.clickNodeStatus}
           onClickBlock={(item) => this.onClickBlock(item)}
-
-          // for connect modal
-          connectModalOpen={this.state.connectModalOpen}
-          closeConnectModal={this.closeConnectModal}
-          components={this.state.components}
-          clickNodeStatus={this.state.clickNodeStatus}
+          events={this.state.events}
         />
-        <div className='right-container'>
-          {this.state.clickNodeStatus ?
-            <RightContainer
-              item={this.state.clickNodeStatus}
-              checkedC={this.state.checkedComponent}
-              addNode={this.addNode}
-              connect={this.toggleConnect}
-              deleteNode={this.deleteNode}
-            /> : null
-          }
-        </div>
+        {this.state.clickNodeStatus ?
+          <RightContainer
+            item={this.state.clickNodeStatus}
+            checkedC={this.state.checkedComponent}
+            addNode={this.addNode}
+            connect={this.toggleConnect}
+            deleteNode={this.deleteNode}
+          /> : null
+        }
+        <ConnectModal
+          open={this.state.connectModalOpen}
+          alert={this.state.components.length < 1}
+          handleClose={this.closeConnectModal}
+          components={this.state.components}
+          checked={this.state.checkedComponent}
+          toggleCheck={this.toggleComponent}
+        />
       </div>
     );
   };

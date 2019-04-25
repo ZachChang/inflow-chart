@@ -6,7 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 const RightContainer = (props) => {
   return (
-    <React.Fragment>
+    <div className='right-container'>
       {(() => {
         switch (props.item.type) {
           case 'p':
@@ -59,7 +59,7 @@ const RightContainer = (props) => {
             return  null
         }
       })()}
-    </React.Fragment>
+    </div>
   )
 }
 
