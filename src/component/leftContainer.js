@@ -35,7 +35,7 @@ class LeftContainer extends Component {
       );
     };
     return (
-        <div className='left-container' id='linecanvas' ref='postionBase'>
+        <div className='left-container' ref='postionBase'>
           {renderTree(this.props.data, false)}
         </div>
     );

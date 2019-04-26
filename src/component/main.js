@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import RightContainer from './rightContainer';
 import LeftContainer from './leftContainer';
 import ConnectModal from './connectModal';
-import { _detect } from './utils';
 
 const data = [
   {id: 'a1', name: 'homepage', parent: null, type: 'p', children: [
@@ -66,25 +65,22 @@ class Main extends Component {
               return ({
                 id: id,
                 name: 'e' + id,
-                connects: [],
-                pathSet: []
+                connects: []
               });
             };
 
+            const codeId = Date.now().toString();
             switch (type) {
               case 'p':
-                var dateCode = Date.now().toString();
-                root.children.push(dataset('p', dateCode));
+                root.children.push(dataset('p', codeId));
                 break;
               case 'e':
-                var dateCode = Date.now().toString();
-                root.children.push(dataset('e', dateCode));
-                this.setState(prevState => ({events: [ ...prevState.events, eventset(dateCode) ] }));
+                root.children.push(dataset('e', codeId));
+                this.setState(prevState => ({events: [ ...prevState.events, eventset(codeId) ] }));
                 break;
               case 'c':
-                var dateCode = Date.now().toString();
-                root.children.push(dataset('c', dateCode));
-                this.setState(prevState => ({components: [ ...prevState.components, dataset('c', dateCode) ] }));
+                root.children.push(dataset('c', codeId));
+                this.setState(prevState => ({components: [ ...prevState.components, dataset('c', codeId) ] }));
                 break;
               default:
                 return null;
@@ -161,17 +157,17 @@ class Main extends Component {
     const eventIndex = this.state.events.map(e => {
       return e.id;
     }).indexOf(eventId);
-    const currentIndex = checkedComponent.indexOf(item.name);
+    const currentIndex = checkedComponent.indexOf(item.id);
     const newConnects = [...this.state.events[eventIndex].connects];
-    const currentPathSet = [...this.state.events[eventIndex].pathSet];
+    // const currentPathSet = [...this.state.events[eventIndex].pathSet];
 
     if (currentIndex === -1) {
-      newConnects.push(item.name);
+      newConnects.push(item.id);
       // get the position of this component in DOM
-      const newPath = _detect(this.state.clickNodeStatus.id, item.id);
+      // const newPath = _detect(this.state.clickNodeStatus.id, item.id);
       const newevents = this.state.events.map(e => {
         if (e.id===eventId) {
-          return ({ ...e, connects: [...newConnects], pathSet: [ ...currentPathSet, newPath]});
+          return ({ ...e, connects: [...newConnects]});
         } else {
           return ({ ...e});
         }
@@ -181,10 +177,10 @@ class Main extends Component {
     }
     else {
       newConnects.splice(currentIndex, 1);
-      currentPathSet.splice(currentIndex, 1);
+      // currentPathSet.splice(currentIndex, 1);
       const newevents = this.state.events.map(e => {
         if (e.id===eventId) {
-          return ({ ...e, connects: [...newConnects], pathSet: [ ...currentPathSet]});
+          return ({ ...e, connects: [...newConnects]});
         } else {
           return ({ ...e});
         }

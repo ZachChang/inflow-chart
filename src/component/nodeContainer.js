@@ -2,29 +2,38 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { PageWrapper, EventWrapper, ComponentWrapper, Text, Node, Arrow } from './styles';
+import { _detect } from './utils';
 import * as d3 from 'd3';
 
 class NodeContainer extends Component {
   componentDidMount() {
-    this.svg = d3.select(this.refs.linecanvas)
-      .append('svg')
-      .attr('class', 'svg-container')
+    if (this.props.item.id==='a1') {
+      this.svg = d3.select(this.refs.linecanvas)
+        .append('svg')
+        .attr('class', 'svg-container');
+    }
   }
   componentDidUpdate() {
-    const pathSet = this.props.events.map( e => {
-      return e.pathSet;
-    });
-    for (var i = 0; i < pathSet.length; i++) {
-      for (var k = 0; k < pathSet[i].length; k++) {
-        this._renderLine(pathSet[i][k]);
+    if (this.props.item.id==='a1') {
+      this.svg.selectAll('path').remove();
+
+      const events = this.props.events;
+      const pathSet = [];
+      for (var i = 0; i < events.length; i++) {
+        for (var k = 0; k < events[i].connects.length; k++) {
+          var path = _detect(events[i].id, events[i].connects[k]);
+          pathSet.push(path);
+        }
       }
+      for (var j = 0; j < pathSet.length; j++) {
+          this._renderLine(pathSet[j]);
+      };
     }
   }
   _renderLine(path) {
     const sl = this.props.scrollLeft;
     const st = this.props.scrollTop;
-
-    console.log({path});
+    console.log({sl, st});
     var data = {
       source: {
         x: path.x0 + sl,
@@ -35,16 +44,11 @@ class NodeContainer extends Component {
         y: path.y1 + st
       }
     };
-
+    // curve line api
     var link = path.y0 === path.y1 ? d3.linkHorizontal() : d3.linkVertical();
-    // draw the curve link
-    link.x(function(d) {
-        return d.x;
-      })
-      .y(function(d) {
-        return d.y;
-      });
+    link.x(function(d) {return d.x;}).y(function(d) {return d.y;});
 
+    // Add new elements
     this.svg.append("path")
         .attr("d", link(data))
         .attr('class', 'link-path')

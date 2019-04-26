@@ -35,7 +35,7 @@ const ConnectModal = (props) => {
               {props.components.map((item, index) => (
                 <ListItem key={index} role={undefined} dense button onClick={() => {props.toggleCheck(item)}}>
                   <Checkbox
-                    checked={props.checked.indexOf(item.name) !== -1}
+                    checked={props.checked.indexOf(item.id) !== -1}
                     tabIndex={-1}
                     disableRipple
                   />
