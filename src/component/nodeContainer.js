@@ -15,25 +15,43 @@ class NodeContainer extends Component {
   }
   componentDidUpdate() {
     if (this.props.item.id==='a1') {
+
+      // earse the old path
       this.svg.selectAll('path').remove();
 
       const events = this.props.events;
+      const clickId = this.props.selected.id;
+      const hoverId = this.props.hoverId;
       const pathSet = [];
+      const highlighPathSet = [];
+
+
       for (var i = 0; i < events.length; i++) {
         for (var k = 0; k < events[i].connects.length; k++) {
           var path = _detect(events[i].id, events[i].connects[k]);
-          pathSet.push(path);
+          if (events[i].id === clickId || events[i].id === hoverId) {
+            const id = events[i].id;
+            console.log({id, clickId, hoverId});
+            highlighPathSet.push(path);
+          } else {
+            pathSet.push(path);
+          }
         }
       }
+
+      // console.log({hoverId, highlighPathSet});
       for (var j = 0; j < pathSet.length; j++) {
-          this._renderLine(pathSet[j]);
+          this._renderLine(pathSet[j], false);
       };
+      for (var z = 0; z < highlighPathSet.length; z++) {
+          this._renderLine(highlighPathSet[z], true);
+      }
     }
   }
-  _renderLine(path) {
+  _renderLine(path, highlight) {
     const sl = this.props.scrollLeft;
     const st = this.props.scrollTop;
-    console.log({sl, st});
+    const pathClass = highlight ? 'highlight-path' : 'normal-path';
     var data = {
       source: {
         x: path.x0 + sl,
@@ -51,7 +69,7 @@ class NodeContainer extends Component {
     // Add new elements
     this.svg.append("path")
         .attr("d", link(data))
-        .attr('class', 'link-path')
+        .attr('class', pathClass)
   }
   render() {
     return (
@@ -73,19 +91,19 @@ class NodeContainer extends Component {
                 {(() => {
                   switch (this.props.item.type) {
                     case 'p':
-                      return  <PageWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectedID} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
+                      return  <PageWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
                               </PageWrapper>;
                     case 'e':
-                      return  <EventWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectedID} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
+                      return  <EventWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
                               </EventWrapper>;
                     case 'c':
-                      return  <ComponentWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectedID} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
+                      return  <ComponentWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
                               </ComponentWrapper>;
                     default:
-                      return  <PageWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectedID} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
+                      return  <PageWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
                               </PageWrapper>;
                   }

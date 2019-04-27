@@ -26,6 +26,7 @@ class Main extends Component {
     this.toggleConnect = this.toggleConnect.bind(this);
     this.closeConnectModal = this.closeConnectModal.bind(this);
     this.toggleComponent = this.toggleComponent.bind(this);
+    this.toggleHover = this.toggleHover.bind(this);
 
     this.state = {
       data: data,
@@ -33,7 +34,8 @@ class Main extends Component {
       components: [],
       clickNodeStatus: data[0],
       connectModalOpen: false,
-      checkedComponent: []
+      checkedComponent: [],
+      hoverId: false
     };
   }
   addNode(type) {
@@ -101,16 +103,31 @@ class Main extends Component {
     const targetId = this.state.clickNodeStatus.id;
     const targetParent =  this.state.clickNodeStatus.parent.id;
     const root = [ ...this.state.data ];
+    const events = [...this.state.events];
+
     // delete node in root data
     this._cutObject(root, targetId, targetParent);
-    const newevents = this.state.events.filter( e => {
-      return e.id !== targetId;
-    });
-    const newcomponents = this.state.components.filter( c => {
-      return c.id !== targetId;
-    });
 
-    this.setState({data: root, events: newevents, components: newcomponents, clickNodeStatus: null});
+    // delete connects in events array
+    if (this.state.clickNodeStatus.type==='c') {
+      const newcomponents = this.state.components.filter( c => {
+        return c.id !== targetId;
+      });
+      for (var i = 0; i < events.length; i++) {
+        const newConnects = events[i].connects.filter( c => {
+          return c !== targetId;
+        });
+        events[i].connects = newConnects;
+      }
+      this.setState({data: root, events: events, components: newcomponents});
+    }
+    //delete the events
+    else {
+      const newevents = events.filter( e => {
+        return e.id !== targetId;
+      });
+      this.setState({data: root, events: newevents});
+    }
   }
   _cutObject(root, targetId, targetParent) {
     if (root instanceof Array) {
@@ -124,6 +141,8 @@ class Main extends Component {
           if (root[prop] === targetParent) {
             let index = root.children.map( child => { return child.id;}).indexOf(targetId);
             root.children.splice(index, 1);
+            // set current selected to the patent component
+            this.setState({clickNodeStatus: root});
           }
         }
         if (prop === 'children') {
@@ -144,6 +163,11 @@ class Main extends Component {
       this.setState({checkedComponent: component});
     }
     this.setState({clickNodeStatus: item});
+  }
+  toggleHover(item) {
+    if (item.type==='e') {
+      this.setState(prevState => ({ hoverId: prevState.hoverId===false ? item.id : false }));
+    }
   }
   toggleConnect() {
     this.setState({connectModalOpen: true});
@@ -198,6 +222,8 @@ class Main extends Component {
           direction={this.props.direction}
           data={this.state.data}
           clickNodeStatus={this.state.clickNodeStatus}
+          toggleHover={this.toggleHover}
+          hoverId={this.state.hoverId}
           onClickBlock={(item) => this.onClickBlock(item)}
           events={this.state.events}
         />
