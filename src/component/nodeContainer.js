@@ -1,7 +1,6 @@
 
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { PageWrapper, EventWrapper, ComponentWrapper, Text, Node, Arrow } from './styles';
+import { PageWrapper, EventWrapper, ComponentWrapper, LogicWrapper, Text, Node, Arrow } from './styles';
 import { _detect } from './utils';
 import * as d3 from 'd3';
 
@@ -28,10 +27,9 @@ class NodeContainer extends Component {
 
       for (var i = 0; i < events.length; i++) {
         for (var k = 0; k < events[i].connects.length; k++) {
-          var path = _detect(events[i].id, events[i].connects[k]);
+          var path = _detect(events[i].id, events[i].connects[k].id);
           if (events[i].id === clickId || events[i].id === hoverId) {
-            const id = events[i].id;
-            console.log({id, clickId, hoverId});
+            // const id = events[i].id;
             highlighPathSet.push(path);
           } else {
             pathSet.push(path);
@@ -74,7 +72,7 @@ class NodeContainer extends Component {
   render() {
     return (
       <React.Fragment>
-        <Node styles={this.props.classes.lines} ref={this.props.item.id === 'a1' ? 'linecanvas' : null}>
+        <Node disabledstyle={this.props.item.type==='l' ? false : this.props.item.disable} styles={this.props.classes.lines} ref={this.props.item.id === 'a1' ? 'linecanvas' : null}>
           { this.props.direction && this.props.item.parent && <Arrow color={this.props.classes.lines.color} /> }
           {
           typeof this.props.render === 'function'
@@ -91,19 +89,23 @@ class NodeContainer extends Component {
                 {(() => {
                   switch (this.props.item.type) {
                     case 'p':
-                      return  <PageWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
+                      return  <PageWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
                               </PageWrapper>;
                     case 'e':
-                      return  <EventWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
+                      return  <EventWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
                               </EventWrapper>;
                     case 'c':
-                      return  <ComponentWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
+                      return  <ComponentWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
                               </ComponentWrapper>;
+                    case 'l':
+                      return  <LogicWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
+                                <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
+                              </LogicWrapper>;
                     default:
-                      return  <PageWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
+                      return  <PageWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
                               </PageWrapper>;
                   }
@@ -117,32 +119,5 @@ class NodeContainer extends Component {
     );
   }
 }
-
-NodeContainer.propTypes = {
-  item: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
-  classes: PropTypes.objectOf(PropTypes.object),
-  render: PropTypes.func,
-  onClick: PropTypes.func,
-  direction: PropTypes.bool,
-  children: PropTypes.node,
-  round: PropTypes.bool,
-};
-
-NodeContainer.defaultProps = {
-  classes: {
-    lines: {
-      height: '60px',
-      width: '2px',
-    },
-    node: {},
-    text: {},
-    arrow: {},
-  },
-  render: null,
-  onClick: null,
-  direction: false,
-  children: null,
-  round: false,
-};
 
 export default NodeContainer;

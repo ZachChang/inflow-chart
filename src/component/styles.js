@@ -7,17 +7,29 @@ export const PageWrapper = styled(Button)`
   z-index: 135;
   margin-top: 2px;
   padding: 10px 10px;
-  background: #b3e5fc;
-  color: rgba(0, 0, 0, 0.54);
+  background: #2fb5f361;
+  color: white;
+  font-size: 10px;
+  border: 1px solid #2fb5f3;
   &:hover{
     cursor: pointer;
-    background: #e3f2fd;
+    background: #7fc1f1;
   }
   ${props => props.id === props.selected && css`
     background: #039be5;
     color: white;
     &:hover {
       background: #81d4fa;
+    }
+  `}
+  ${props => props.disabledstyle === true && css`
+    background: none;
+    border: 1px dashed #696969;
+    color: #696969;
+    &:hover {
+      background: none;
+      border: 1px dashed #696969;
+      color: #696969;
     }
   `}
 `;
@@ -27,17 +39,29 @@ export const EventWrapper = styled(Button)`
   z-index: 135;
   margin-top: 2px;
   padding: 10px 10px;
-  background: #ffe0b2;
-  color: rgba(0, 0, 0, 0.54);
+  background: #ffac3173;
+  color: white;
+  font-size: 10px;
+  border: 1px solid #ffac31ed;
   &:hover{
     cursor: pointer;
-    background: #e3f2fd;
+    background: #ffac31e0;
   }
   ${props => props.id === props.selected && css`
     background: #ef6c00;
     color: white;
     &:hover {
       background: #e65100;
+    }
+  `}
+  ${props => props.disabledstyle === true && css`
+    background: none;
+    border: 1px dashed #696969;
+    color: #696969;
+    &:hover {
+      background: none;
+      border: 1px dashed #696969;
+      color: #696969;
     }
   `}
 `;
@@ -47,17 +71,62 @@ export const ComponentWrapper = styled(Button)`
   z-index: 135;
   margin-top: 2px;
   padding: 10px 10px;
-  background: #c8e6c9;
-  color: rgba(0, 0, 0, 0.54);
+  background: #74cc776e;
+  color: white;
+  font-size: 10px;
+  border: 1px solid #74cc77f7;
   &:hover{
     cursor: pointer;
-    background: #e8f5e9;
+    background: #4cd851c7;
   }
   ${props => props.id === props.selected && css`
-    background: #43a047;
+    background: #01b508;
     color: white;
     &:hover {
       background: #388e3c;
+    }
+  `}
+  ${props => props.disabledstyle === true && css`
+    background: none;
+    border: 1px dashed #696969;
+    color: #696969;
+    &:hover {
+      background: none;
+      border: 1px dashed #696969;
+      color: #696969;
+    }
+  `}
+`;
+
+export const LogicWrapper = styled(Button)`
+  display: inline-block;
+  z-index: 135;
+  margin-top: 2px;
+  padding: 10px 10px;
+  background: none;
+  border: 1px solid #f06292;
+  background: #f062927a;
+  color: white;
+  font-size: 10px;
+  &:hover{
+    cursor: pointer;
+    background: #f06292ad;
+  }
+  ${props => props.id === props.selected && css`
+    background: #f06292ad;;
+    color: white;
+    &:hover {
+      background: #f06292ad;
+    }
+  `}
+  ${props => props.disabledstyle === true && css`
+    background: none;
+    border: 1px dashed #f06292;
+    color: #f06292;
+    &:hover {
+      background: none;
+      border: 1px dashed #f06292;
+      color: #f06292;
     }
   `}
 `;
@@ -66,7 +135,7 @@ export const Round = styled.div`
   position: absolute;
   width: 6px;
   height: 6px;
-  border: 2px solid  ${props => props.color || '#d6e2ea'};
+  border: 2px #149867;
   background-color: #fff;
   left: calc( 50% - 5px );
   top: -3px;
@@ -83,22 +152,22 @@ export const Node = styled.li`
     position: absolute;
     top: 0;
     right:  calc( 50% - ${props => calcWidth(props.styles.width)});
-    border-top: ${props => props.styles.width || '2px'} solid ${props => props.styles.color || '#d6e2ea'} ;
+    border-top: 1px solid ${props => (props.disabledstyle ? '#696969' : '#149867')};
     width: 50%;
     height: ${props => (props.styles ? props.styles.height : '40px')};
-    z-index: -1;
+    z-index: 1;
   }
   ::after{
     left: calc( 50% - ${props => calcWidth(props.styles.width)});
-    border-left: ${props => props.styles.width || '2px'} solid ${props => props.styles.color || '#d6e2ea'};
+    border-left: 1px solid ${props => (props.disabledstyle ? '#696969' : '#149867')};
     content: '';
     position: absolute;
     top: 0;
     //right: calc( 50% - ${props => calcWidth(props.styles.width)});
-    border-top: ${props => props.styles.width || '2px'} solid ${props => props.styles.color || '#d6e2ea'};
+    border-top: 1px solid ${props => (props.disabledstyle ? '#696969' : '#149867')};
     width: 50%;
     height: ${props => (props.styles ? props.styles.height : '40px')};
-    z-index: -1;
+    z-index: 1;
   }
   &:first-child::before{
     border: 0 none;
@@ -107,7 +176,7 @@ export const Node = styled.li`
   border : none
   }
 &:last-child::before{
-  border-right: ${props => props.styles.width || '2px'} solid ${props => props.styles.color || '#d6e2ea'};
+  border-right: 1px solid ${props => (props.disabledstyle ? '#696969' : '#149867')};
 }
 &:only-child{
   padding-top : 0px;
@@ -121,7 +190,7 @@ export const Node = styled.li`
 `;
 
 export const Arrow = styled.span`
-  border: solid  ${props => (props.color ? props.color : '#d6e2ea')} ;
+  border: solid '#149867';
   border-width: 0 2px 2px 0;
   display: inline-block;
   padding: 3px;
@@ -154,7 +223,7 @@ export const Root = styled.ul`
     position: absolute;
     top: 0;
     left: calc( 50% - ${props => calcWidth(props.styles.width)});
-    border-left: ${props => props.styles.width || '2px'} solid ${props => props.styles.color || '#d6e2ea'};
+    border-left: 1px solid ${props => (props.disabledstyle ? '#696969' : '#149867')};
     width: 0;
     height: ${props => props.styles.height || '40px'};
   }

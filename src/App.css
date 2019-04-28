@@ -2,30 +2,46 @@
   width: 100%;
   height: 100vh;
   display: flex;
+  background-color: #292D3D;
 }
 .left-container {
-  width: 80%;
+  width: 85%;
   min-width: 300px;
   height: 100vh;
   overflow-x: scroll;
   overflow-y: scroll;
 }
 .right-container {
-  padding: 30px 10px;
-  width: 20%;
+  padding: 30px 30px;
+  width: 15%;
+  color: white;
   border-left: 1px solid gray;
+}
+.list {
+  color: white !important;
+  margin: 0px;
+}
+.name {
+  font-size: 28px;
+}
+.icon {
+  margin-left: 20px;
+  cursor: pointer;
 }
 .button-container {
   display: flex;
-  margin: 20px 0;
+  margin: 30px 0;
   flex-direction: column;
 }
 .add-button {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.54);
+  color: white;
   margin-bottom: 10px;
   padding: 15px 0;
   letter-spacing: 2px;
+}
+.delete-btn {
+  margin-top: 50px;
 }
 .svg-container {
   position: absolute;
@@ -36,15 +52,16 @@
 }
 .highlight-path {
   stroke: #ffc107;
-  stroke-width: 1.5px;
+  stroke-width: 1px;
   fill: none;
 }
 .normal-path {
-  stroke: #e0e0e0;
+  stroke: #696969;
   stroke-width: 1px;
   fill: none;
 }
 .test { position: absolute;}
-.page-color { background-color: #b3e5fc; }
-.event-color { background-color: #ffe0b2; }
-.component-color { background-color: #c8e6c9; }
+.page-color { border-color: #b3e5fc; }
+.event-color { border-color: #ffe0b2; }
+.component-color { border-color: #c8e6c9; }
+.logic-color { border-color: #f06292; }
