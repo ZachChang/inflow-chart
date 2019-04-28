@@ -274,6 +274,12 @@ class Main extends Component {
   }
   onClickBlock(item) {
     if (item.type==='e') {
+      // toggle the logics in this event
+      const logics = this.state.events.filter( e => {return e.id === item.id;})[0].logics;
+      for (let i = 0; i < logics.length; i++) {
+        this.changeDisable({}, true, logics[i].id);
+      }
+
       const component = this.state.events.filter(e => {
         return e.id === item.id;
       })[0].connects;
@@ -404,8 +410,8 @@ class Main extends Component {
       }
     }
   }
-  changeDisable(event) {
-    const targetId = this.state.clickNodeStatus.id;
+  changeDisable(e, boolean, id) {
+    const targetId = id !== undefined ? id : this.state.clickNodeStatus.id;
     const root = [ ...this.state.data ];
 
     this._editDisableNested(root, targetId, false);
