@@ -10,7 +10,7 @@ const initRoot = [
     {id: 'b1', parent: {id: 'a1'}, name: 'page01', type: 'p', disable: false, fadeOpen: false, children: []},
     {id: 'b2', parent: {id: 'a1'}, name: 'page02', type: 'p', disable: false, fadeOpen: false, children: [
       {id: 'c1', parent: {id: 'b2'}, name: 'page02-1', type: 'p', disable: false, fadeOpen: false, children: []},
-      {id: 'c2', parent: {id: 'b2'}, name: 'component1', type: 'c', disable: false, fadeOpen: false, children: []}
+      {id: 'c2', parent: {id: 'b2'}, name: 'component1', type: 'c', disable: false, fadeOpen: false, children: [], log: []}
     ]},
     {id: 'b3', parent: {id: 'a1'}, name: 'page03', type: 'p', disable: false, fadeOpen: false, children: []},
     {id:'b4', parent: {id: 'a1'}, name: 'page04', type: 'p', disable: false, fadeOpen: false, children: []},
@@ -43,6 +43,7 @@ class Main extends Component {
     this._editDisableNested = this._editDisableNested.bind(this);
     this._removeCandL = this._removeCandL.bind(this);
     this._toggleFade = this._toggleFade.bind(this);
+    this._cleanFade = this._cleanFade.bind(this);
 
     this.state = {
       data: initRoot,
@@ -90,7 +91,8 @@ class Main extends Component {
                 children: [],
                 disable: type==='l' ? true : root.disable,
                 type: type,
-                fadeOpen: false
+                fadeOpen: false,
+                log: []
               });
             };
             const eventset = (id) => {
@@ -285,32 +287,35 @@ class Main extends Component {
       const root = [ ...this.state.data ];
       for (let i = 0; i < currentEvent.logics.length; i++) {
         this._editDisableNested(root, currentEvent.logics[i].id, false);
-        this._toggleFade(root, currentEvent.logics[i].id);
+      }
+      for (let i = 0; i < currentEvent.connects.length; i++) {
+        this._toggleFade(root, currentEvent.connects[i].id, item.name);
       }
 
       this.setState({data: root, checkedLogics: currentEvent.logics, checkedComponent: currentEvent.connects});
     }
     this.setState({clickNodeStatus: item});
   }
-  _toggleFade(root, targetId) {
+  _toggleFade(root, targetId, log) {
     if (root instanceof Array) {
       for (var i = 0; i < root.length; i++) {
-        this._toggleFade(root[i], targetId);
+        this._toggleFade(root[i], targetId,log);
       }
     }
     else {
       for (var prop in root) {
         if (prop === 'id') {
           if (root[prop] === targetId) {
-            console.log('show');
-            const newFade = !root.fadeOpen;
-            root.fadeOpen = newFade;
+            const prevlog = [...root.log];
+            // const newFade = !root.fadeOpen;
+            root.fadeOpen = true;
+            root.log = [...prevlog, log]
           }
         }
         if (prop === 'children') {
           if (root[prop].length > 0) {
             for (let j = 0; j < root[prop].length; j++) {
-              this._toggleFade(root[prop][j], targetId);
+              this._toggleFade(root[prop][j], targetId, log);
             }
           }
         }
@@ -323,7 +328,30 @@ class Main extends Component {
     }
   }
   toggleConnect() {
+    const root = [...this.state.data];
+    this._cleanFade(root);
     this.setState({connectModalOpen: true});
+  }
+  _cleanFade(root) {
+    if (root instanceof Array) {
+      for (var i = 0; i < root.length; i++) {
+        this._cleanFade(root[i]);
+      }
+    }
+    else {
+      for (var prop in root) {
+        if (prop === 'fadeOpen') {
+          root.fadeOpen = false;
+        }
+        if (prop === 'children') {
+          if (root[prop].length > 0) {
+            for (let j = 0; j < root[prop].length; j++) {
+              this._cleanFade(root[prop][j]);
+            }
+          }
+        }
+      }
+    }
   }
   closeConnectModal() {
     this.setState({connectModalOpen: false});

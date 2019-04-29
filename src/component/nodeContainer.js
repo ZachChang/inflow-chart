@@ -107,23 +107,16 @@ class NodeContainer extends Component {
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
                               </EventWrapper>;
                     case 'c':
-                      return  <React.Fragment>
-                                <Fade bottom when={this.props.item.fadeOpen} duration={500}>
-                                  <div>some info</div>
+                      return  <ComponentWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
+                                <Fade top opposite when={this.props.item.fadeOpen} duration={500}>
+                                  <div>{this.props.item.log.slice(-1)[0]}</div>
                                 </Fade>
-                                <ComponentWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
-                                  <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
-                                </ComponentWrapper>
-                              </React.Fragment>;
+                                <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
+                              </ComponentWrapper>;
                     case 'l':
-                      return  <React.Fragment>
-                                <Fade bottom when={this.props.item.fadeOpen} duration={500}>
-                                  <div>some info</div>
-                                </Fade>
-                                <LogicWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
-                                  <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
-                                </LogicWrapper>
-                              </React.Fragment>;
+                      return  <LogicWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
+                                <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
+                              </LogicWrapper>;
                     default:
                       return  <PageWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>

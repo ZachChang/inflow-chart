@@ -65,9 +65,13 @@
   border: 1px solid rgba(255, 172, 49, 0.93);
   background: rgba(255, 172, 49, 0.45);
   position: absolute;
-  bottom: 47px;
-  left: -25px;
+  top: 50px;
+  left: 0;
   color: white;
+}
+.list-frame {
+  max-height: 400px;
+  overflow-y: scroll;
 }
 .test { position: absolute;}
 .page-color { border-color: #b3e5fc; }

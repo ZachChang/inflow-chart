@@ -76,6 +76,18 @@ const RightContainer = (props) => {
                         {props.item.name}
                         <EditIcon className='icon' onClick={props.toggleChangeName}></EditIcon>
                       </div>
+                      {props.item.log.length > 0 &&
+                        <div>
+                          <p>log from event:</p>
+                          <List className='list-frame'>
+                            {props.item.log.map((item,index) =>
+                              <ListItem button key={index}>
+                                <p className='list'>{index + 1} {item}</p>
+                              </ListItem>
+                            )}
+                          </List>
+                        </div>
+                      }
                       {props.item.parent === null ? null :
                         <Button className='delete-btn' variant="contained" color="secondary" onClick={props.deleteNode}>Delete</Button>
                       }
