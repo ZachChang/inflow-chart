@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { PageWrapper, EventWrapper, ComponentWrapper, LogicWrapper, Text, Node, Arrow } from './styles';
 import { _detect } from './utils';
 import * as d3 from 'd3';
+import Fade from 'react-reveal/Fade';
 
 class NodeContainer extends Component {
   componentDidMount() {
@@ -25,9 +26,19 @@ class NodeContainer extends Component {
       const highlighPathSet = [];
 
 
-      for (var i = 0; i < events.length; i++) {
-        for (var k = 0; k < events[i].connects.length; k++) {
+      for (let i = 0; i < events.length; i++) {
+        console.log(events[i]);
+        for (let k = 0; k < events[i].connects.length; k++) {
           var path = _detect(events[i].id, events[i].connects[k].id);
+          if (events[i].id === clickId || events[i].id === hoverId) {
+            // const id = events[i].id;
+            highlighPathSet.push(path);
+          } else {
+            pathSet.push(path);
+          }
+        }
+        for (let k = 0; k < events[i].logics.length; k++) {
+          var path = _detect(events[i].id, events[i].logics[k].id);
           if (events[i].id === clickId || events[i].id === hoverId) {
             // const id = events[i].id;
             highlighPathSet.push(path);
@@ -37,11 +48,10 @@ class NodeContainer extends Component {
         }
       }
 
-      // console.log({hoverId, highlighPathSet});
-      for (var j = 0; j < pathSet.length; j++) {
+      for (let j = 0; j < pathSet.length; j++) {
           this._renderLine(pathSet[j], false);
       };
-      for (var z = 0; z < highlighPathSet.length; z++) {
+      for (let z = 0; z < highlighPathSet.length; z++) {
           this._renderLine(highlighPathSet[z], true);
       }
     }
@@ -97,13 +107,23 @@ class NodeContainer extends Component {
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
                               </EventWrapper>;
                     case 'c':
-                      return  <ComponentWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
-                                <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
-                              </ComponentWrapper>;
+                      return  <React.Fragment>
+                                <Fade bottom when={this.props.item.fadeOpen} duration={500}>
+                                  <div>some info</div>
+                                </Fade>
+                                <ComponentWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
+                                  <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
+                                </ComponentWrapper>
+                              </React.Fragment>;
                     case 'l':
-                      return  <LogicWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
-                                <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
-                              </LogicWrapper>;
+                      return  <React.Fragment>
+                                <Fade bottom when={this.props.item.fadeOpen} duration={500}>
+                                  <div>some info</div>
+                                </Fade>
+                                <LogicWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
+                                  <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
+                                </LogicWrapper>
+                              </React.Fragment>;
                     default:
                       return  <PageWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>

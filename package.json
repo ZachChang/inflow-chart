@@ -11,6 +11,7 @@
     "react-archer": "^1.1.0",
     "react-dom": "^16.8.5",
     "react-jss": "^8.6.1",
+    "react-reveal": "^1.2.2",
     "react-scripts": "2.1.8",
     "styled-components": "^4.2.0"
   },
