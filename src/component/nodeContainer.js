@@ -15,6 +15,7 @@ class NodeContainer extends Component {
   }
   componentDidUpdate() {
     if (this.props.item.id==='a1') {
+      // erase the past svg path
       this.svg.selectAll('path').remove();
 
       const events = this.props.events;
@@ -73,19 +74,19 @@ class NodeContainer extends Component {
                 {(() => {
                   switch (this.props.item.type) {
                     case 'p':
-                      return  <PageWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectedID} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
+                      return  <PageWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectNode.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
                               </PageWrapper>;
                     case 'e':
-                      return  <EventWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectedID} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
+                      return  <EventWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectNode.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
                               </EventWrapper>;
                     case 'c':
-                      return  <ComponentWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectedID} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
+                      return  <ComponentWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectNode.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
                               </ComponentWrapper>;
                     default:
-                      return  <PageWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectedID} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
+                      return  <PageWrapper type={this.props.item.type} id={this.props.item.id} selected={this.props.selectNode.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
                               </PageWrapper>;
                   }

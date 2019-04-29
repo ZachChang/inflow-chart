@@ -22,7 +22,7 @@ class LeftContainer extends Component {
                 render={render}
                 direction={direction}
                 round={multiChild}
-                selectedID={this.props.clickNodeStatus ? this.props.clickNodeStatus.id : 0}
+                selectNode={this.props.clickNodeStatus}
                 events={this.props.events}
                 scrollLeft={this.refs.postionBase ? this.refs.postionBase.scrollLeft : 0}
                 scrollTop={this.refs.postionBase ? this.refs.postionBase.scrollTop ? this.refs.postionBase.scrollTop : 0 : 0}
