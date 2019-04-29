@@ -29,13 +29,13 @@ const ConnectModal = (props) => {
         </React.Fragment>
         :
         <React.Fragment>
-          <DialogTitle id="alert-dialog-title">Choose a component to be connected to this event.</DialogTitle>
+          <DialogTitle id="alert-dialog-title">Choose component to be connected to this event.</DialogTitle>
           <DialogContent>
             <List>
               {props.components.map((item, index) => (
                 <ListItem key={index} role={undefined} dense button onClick={() => {props.toggleCheck(item)}}>
                   <Checkbox
-                    checked={props.checked.indexOf(item.id) !== -1}
+                    checked={props.checkedId.indexOf(item.id) !== -1}
                     tabIndex={-1}
                     disableRipple
                   />
