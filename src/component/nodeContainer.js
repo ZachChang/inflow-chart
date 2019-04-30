@@ -29,7 +29,7 @@ class NodeContainer extends Component {
       for (let i = 0; i < events.length; i++) {
         console.log(events[i]);
         for (let k = 0; k < events[i].connects.length; k++) {
-          var path = _detect(events[i].id, events[i].connects[k].id);
+          const path = _detect(events[i].id, events[i].connects[k].id);
           if (events[i].id === clickId || events[i].id === hoverId) {
             // const id = events[i].id;
             highlighPathSet.push(path);
@@ -38,7 +38,7 @@ class NodeContainer extends Component {
           }
         }
         for (let k = 0; k < events[i].logics.length; k++) {
-          var path = _detect(events[i].id, events[i].logics[k].id);
+          const path = _detect(events[i].id, events[i].logics[k].id);
           if (events[i].id === clickId || events[i].id === hoverId) {
             // const id = events[i].id;
             highlighPathSet.push(path);
@@ -99,26 +99,26 @@ class NodeContainer extends Component {
                 {(() => {
                   switch (this.props.item.type) {
                     case 'p':
-                      return  <PageWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
+                      return  <PageWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
                               </PageWrapper>;
                     case 'e':
-                      return  <EventWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
+                      return  <EventWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item, true)} onMouseLeave={() => this.props.toggleHover(this.props.item, false)}>
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
                               </EventWrapper>;
                     case 'c':
-                      return  <ComponentWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
+                      return  <ComponentWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
                                 <Fade top opposite when={this.props.item.fadeOpen} duration={500}>
                                   <div>{this.props.item.log.slice(-1)[0]}</div>
                                 </Fade>
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
                               </ComponentWrapper>;
                     case 'l':
-                      return  <LogicWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
+                      return  <LogicWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
                               </LogicWrapper>;
                     default:
-                      return  <PageWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)} onMouseEnter={() => this.props.toggleHover(this.props.item)} onMouseLeave={() => this.props.toggleHover(this.props.item)}>
+                      return  <PageWrapper disabledstyle={this.props.item.disable} type={this.props.item.type} id={this.props.item.id} selected={this.props.selected.id} styles={this.props.classes.node} onClick={() => this.props.onClick(this.props.item)}>
                                 <Text styles={this.props.classes.text}>{this.props.item.name}</Text>
                               </PageWrapper>;
                   }

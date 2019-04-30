@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import Header from './header';
 import PropTypes from 'prop-types';
 import RightContainer from './rightContainer';
 import LeftContainer from './leftContainer';
 import ConnectModal from './connectModal';
 import EditNameModal from './editNameModal';
+import Cookies from 'js-cookie';
 
 const initRoot = [
   {id: 'a1', name: 'homepage', parent: null, type: 'p', disable: false, fadeOpen: false, children: [
@@ -43,16 +45,18 @@ class Main extends Component {
     this._editDisableNested = this._editDisableNested.bind(this);
     this._removeCandL = this._removeCandL.bind(this);
     this._toggleFade = this._toggleFade.bind(this);
-    this._cleanFade = this._cleanFade.bind(this);
+    this._fireFade = this._fireFade.bind(this);
 
     this.state = {
       data: initRoot,
+      dataType: 'init',
       events: initEvents,
       components: initComponents,
       logics: [],
       clickNodeStatus: initRoot[0],
       connectModalOpen: false,
       editNameOpen: false,
+      deleteAlertOpen: false,
       checkedComponent: [],
       checkedLogics: [],
       hoverId: false
@@ -283,23 +287,36 @@ class Main extends Component {
         return e.id === item.id;
       })[0];
       // fire the linked component and logic
-      const targetId = this.state.clickNodeStatus.id;
       const root = [ ...this.state.data ];
       for (let i = 0; i < currentEvent.logics.length; i++) {
         this._editDisableNested(root, currentEvent.logics[i].id, false);
       }
-      for (let i = 0; i < currentEvent.connects.length; i++) {
-        this._toggleFade(root, currentEvent.connects[i].id, item.name);
-      }
-
+      this._fireFade(root, currentEvent, item);
       this.setState({data: root, checkedLogics: currentEvent.logics, checkedComponent: currentEvent.connects});
     }
     this.setState({clickNodeStatus: item});
   }
-  _toggleFade(root, targetId, log) {
+  _fireFade(data, currentEvent, item) {
+    const root = data;
+
+    // fade out the info first
+    for (let i = 0; i < currentEvent.connects.length; i++) {
+      this._toggleFade(root, currentEvent.connects[i].id, item.name, false);
+    }
+    this.setState({data: root});
+
+    // fade in the new info
+    setTimeout(() => {
+      for (let i = 0; i < currentEvent.connects.length; i++) {
+        this._toggleFade(root, currentEvent.connects[i].id, item.name, true);
+      }
+      this.setState({data: root});
+    }, 300);
+  }
+  _toggleFade(root, targetId, log, value) {
     if (root instanceof Array) {
       for (var i = 0; i < root.length; i++) {
-        this._toggleFade(root[i], targetId,log);
+        this._toggleFade(root[i], targetId, log, value);
       }
     }
     else {
@@ -307,51 +324,33 @@ class Main extends Component {
         if (prop === 'id') {
           if (root[prop] === targetId) {
             const prevlog = [...root.log];
-            // const newFade = !root.fadeOpen;
-            root.fadeOpen = true;
-            root.log = [...prevlog, log]
+            root.fadeOpen = value;
+            if (value===true) {
+              root.log = [...prevlog, log];
+            }
           }
         }
         if (prop === 'children') {
           if (root[prop].length > 0) {
             for (let j = 0; j < root[prop].length; j++) {
-              this._toggleFade(root[prop][j], targetId, log);
+              this._toggleFade(root[prop][j], targetId, log, value);
             }
           }
         }
       }
     }
   }
-  toggleHover(item) {
+  toggleHover(item, value) {
     if (item.type==='e') {
-      this.setState(prevState => ({ hoverId: prevState.hoverId===false ? item.id : false }));
+      if (value===true) {
+        this.setState({hoverId: item.id});
+      } else {
+        this.setState({hoverId: false})
+      }
     }
   }
   toggleConnect() {
-    const root = [...this.state.data];
-    this._cleanFade(root);
     this.setState({connectModalOpen: true});
-  }
-  _cleanFade(root) {
-    if (root instanceof Array) {
-      for (var i = 0; i < root.length; i++) {
-        this._cleanFade(root[i]);
-      }
-    }
-    else {
-      for (var prop in root) {
-        if (prop === 'fadeOpen') {
-          root.fadeOpen = false;
-        }
-        if (prop === 'children') {
-          if (root[prop].length > 0) {
-            for (let j = 0; j < root[prop].length; j++) {
-              this._cleanFade(root[prop][j]);
-            }
-          }
-        }
-      }
-    }
   }
   closeConnectModal() {
     this.setState({connectModalOpen: false});
@@ -475,12 +474,14 @@ class Main extends Component {
       }
       this.setState({data: root, events: events, logics: newlogics});
     }
-    //delete the events
-    else {
+    else if (this.state.clickNodeStatus.type==='e') {
       const events = [...this.state.events];
       const tIndex = events.map(e => { return e.id; }).indexOf(targetId);
       events[tIndex].name = newName;
       this.setState({data: root, events: events});
+    }
+    else {
+      this.setState({data: root});
     }
   }
   _editNameinNested(root, targetId, newName) {
@@ -556,48 +557,67 @@ class Main extends Component {
       }
     }
   }
+  componentDidUpdate() {
+    // save the root tree in cookie
+    const name = this.state.dataType;
+    const value = {...this.state}
+    console.log(value);
+    Cookies.set(name, value, {domain: null});
+  }
+  componentDidMount() {
+    // load the root tree if user has made one before
+    const name = this.state.dataType;
+    const value = Cookies.getJSON(name);
+    if (value) {
+      console.log(value);
+      this.setState({...value});
+    }
+  }
   render() {
     return (
-      <div className='main-container'>
-        <LeftContainer
-          classes={this.props.classes}
-          render={this.props.render}
-          direction={this.props.direction}
-          data={this.state.data}
-          clickNodeStatus={this.state.clickNodeStatus}
-          toggleHover={this.toggleHover}
-          hoverId={this.state.hoverId}
-          onClickBlock={(item) => this.onClickBlock(item)}
-          events={this.state.events}
+      <React.Fragment>
+        <Header />
+        <div className='main-container'>
+          <LeftContainer
+            classes={this.props.classes}
+            render={this.props.render}
+            direction={this.props.direction}
+            data={this.state.data}
+            clickNodeStatus={this.state.clickNodeStatus}
+            toggleHover={this.toggleHover}
+            hoverId={this.state.hoverId}
+            onClickBlock={(item) => this.onClickBlock(item)}
+            events={this.state.events}
+          />
+          {this.state.clickNodeStatus ?
+            <RightContainer
+              item={this.state.clickNodeStatus}
+              checkedC={this.state.checkedComponent}
+              addNode={this.addNode}
+              connect={this.toggleConnect}
+              deleteNode={this.deleteNode}
+              toggleChangeName={this.toggleChangeName}
+              changeDisable={this.changeDisable}
+            /> : null
+          }
+          <ConnectModal
+            open={this.state.connectModalOpen}
+            handleClose={this.closeConnectModal}
+            components={this.state.components}
+            logics={this.state.logics}
+            checkedCId={this.state.checkedComponent.map(c => {return c.id;})}
+            checkedLId={this.state.checkedLogics.map(l => {return l.id;})}
+            toggleCheck={this.toggleComponent}
+          />
+        <EditNameModal
+          open={this.state.editNameOpen}
+          handleClose={this.toggleChangeName}
+          name={this.state.clickNodeStatus.name}
+          type={this.state.clickNodeStatus.type}
+          changeName={this.changeName}
         />
-        {this.state.clickNodeStatus ?
-          <RightContainer
-            item={this.state.clickNodeStatus}
-            checkedC={this.state.checkedComponent}
-            addNode={this.addNode}
-            connect={this.toggleConnect}
-            deleteNode={this.deleteNode}
-            toggleChangeName={this.toggleChangeName}
-            changeDisable={this.changeDisable}
-          /> : null
-        }
-        <ConnectModal
-          open={this.state.connectModalOpen}
-          handleClose={this.closeConnectModal}
-          components={this.state.components}
-          logics={this.state.logics}
-          checkedCId={this.state.checkedComponent.map(c => {return c.id;})}
-          checkedLId={this.state.checkedLogics.map(l => {return l.id;})}
-          toggleCheck={this.toggleComponent}
-        />
-      <EditNameModal
-        open={this.state.editNameOpen}
-        handleClose={this.toggleChangeName}
-        name={this.state.clickNodeStatus.name}
-        type={this.state.clickNodeStatus.type}
-        changeName={this.changeName}
-      />
-      </div>
+        </div>
+      </React.Fragment>
     );
   };
 }
