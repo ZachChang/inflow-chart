@@ -24,8 +24,8 @@ export const _detect = (from, to) => {
     // if from point higher than to point
     const x0 = fromBox.left + fromBox.width * 0.5 - 40;
     const x1 = toBox.left + toBox.width * 0.5 - 40;
-    const y0 = fromBox.top + fromBox.height - 16;
-    const y1 = toBox.top - 16;
+    const y0 = fromBox.top + fromBox.height - 16 - 40;
+    const y1 = toBox.top - 16 - 40;
 
     return {x0, y0, x1, y1};
   }
@@ -33,8 +33,8 @@ export const _detect = (from, to) => {
     // if from point lower than to point
     const x0 = fromBox.left + fromBox.width * 0.5 - 40;
     const x1 = toBox.left + toBox.width * 0.5 - 40;
-    const y0 = fromBox.top - 16;
-    const y1 = toBox.top + toBox.height - 16;
+    const y0 = fromBox.top - 16 - 40;
+    const y1 = toBox.top + toBox.height - 16 - 40;
 
     return {x0, y0, x1, y1};
   }
@@ -44,16 +44,16 @@ export const _detect = (from, to) => {
       // frombox is left to toBox
       const x0 = fromBox.right - 50;
       const x1 = toBox.left - 40;
-      const y0 = fromBox.top + fromBox.height * 0.5 - 16;
-      const y1 = toBox.top + toBox.height * 0.5 - 16;
+      const y0 = fromBox.top + fromBox.height * 0.5 - 16 - 40;
+      const y1 = toBox.top + toBox.height * 0.5 - 16 - 40;
 
       return {x0, y0, x1, y1};
     } else {
       // frombox is right to toBox
       const x0 = fromBox.left - 40;
       const x1 = toBox.right - 50;
-      const y0 = fromBox.top + fromBox.height * 0.5 - 16;
-      const y1 = toBox.top + toBox.height * 0.5 - 16;
+      const y0 = fromBox.top + fromBox.height * 0.5 - 16 - 40;
+      const y1 = toBox.top + toBox.height * 0.5 - 16 - 40;
 
       return {x0, y0, x1, y1};
     }

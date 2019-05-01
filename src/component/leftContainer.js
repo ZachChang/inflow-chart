@@ -24,7 +24,7 @@ class LeftContainer extends Component {
                 round={multiChild}
                 selected={this.props.clickNodeStatus}
                 events={this.props.events}
-                toggleHover={(item) => this.props.toggleHover(item)}
+                toggleHover={(item, value) => this.props.toggleHover(item, value)}
                 hoverId={this.props.hoverId}
                 scrollLeft={this.refs.postionBase ? this.refs.postionBase.scrollLeft : 0}
                 scrollTop={this.refs.postionBase ? this.refs.postionBase.scrollTop ? this.refs.postionBase.scrollTop : 0 : 0}

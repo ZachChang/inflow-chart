@@ -6,11 +6,13 @@
     "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "^3.0.2",
     "d3": "^5.9.2",
+    "js-cookie": "^2.2.0",
     "jss": "^9.8.7",
     "react": "^16.8.5",
     "react-archer": "^1.1.0",
     "react-dom": "^16.8.5",
     "react-jss": "^8.6.1",
+    "react-reveal": "^1.2.2",
     "react-scripts": "2.1.8",
     "styled-components": "^4.2.0"
   },

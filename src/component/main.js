@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
+import Header from './header';
 import PropTypes from 'prop-types';
 import RightContainer from './rightContainer';
 import LeftContainer from './leftContainer';
 import ConnectModal from './connectModal';
 import EditNameModal from './editNameModal';
+import Cookies from 'js-cookie';
 
 const initRoot = [
-  {id: 'a1', name: 'homepage', parent: null, type: 'p', disable: false, children: [
-    {id: 'b1', parent: {id: 'a1'}, name: 'page01', type: 'p', disable: false, children: []},
-    {id: 'b2', parent: {id: 'a1'}, name: 'page02', type: 'p', disable: false, children: [
-      {id: 'c1', parent: {id: 'b2'}, name: 'page02-1', type: 'p', disable: false, children: []},
-      {id: 'c2', parent: {id: 'b2'}, name: 'component1', type: 'c', disable: false, children: []}
+  {id: 'a1', name: 'homepage', parent: null, type: 'p', disable: false, fadeOpen: false, children: [
+    {id: 'b1', parent: {id: 'a1'}, name: 'page01', type: 'p', disable: false, fadeOpen: false, children: []},
+    {id: 'b2', parent: {id: 'a1'}, name: 'page02', type: 'p', disable: false, fadeOpen: false, children: [
+      {id: 'c1', parent: {id: 'b2'}, name: 'page02-1', type: 'p', disable: false, fadeOpen: false, children: []},
+      {id: 'c2', parent: {id: 'b2'}, name: 'component1', type: 'c', disable: false, fadeOpen: false, children: [], log: []}
     ]},
-    {id: 'b3', parent: {id: 'a1'}, name: 'page03', type: 'p', disable: false, children: []},
-    {id:'b4', parent: {id: 'a1'}, name: 'page04', type: 'p', disable: false, children: []},
-    {id:'b5', parent: {id: 'a1'}, name: 'event1', type: 'e', disable: false, children: []}
+    {id: 'b3', parent: {id: 'a1'}, name: 'page03', type: 'p', disable: false, fadeOpen: false, children: []},
+    {id:'b4', parent: {id: 'a1'}, name: 'page04', type: 'p', disable: false, fadeOpen: false, children: []},
+    {id:'b5', parent: {id: 'a1'}, name: 'event1', type: 'e', disable: false, fadeOpen: false, children: []}
   ]}
 ];
 const initEvents = [
@@ -42,16 +44,21 @@ class Main extends Component {
     this.changeDisable = this.changeDisable.bind(this);
     this._editDisableNested = this._editDisableNested.bind(this);
     this._removeCandL = this._removeCandL.bind(this);
+    this._toggleFade = this._toggleFade.bind(this);
+    this._fireFade = this._fireFade.bind(this);
 
     this.state = {
       data: initRoot,
+      dataType: 'init',
       events: initEvents,
       components: initComponents,
       logics: [],
       clickNodeStatus: initRoot[0],
       connectModalOpen: false,
       editNameOpen: false,
+      deleteAlertOpen: false,
       checkedComponent: [],
+      checkedLogics: [],
       hoverId: false
     };
   }
@@ -87,7 +94,9 @@ class Main extends Component {
                 parent: {id: root.id},
                 children: [],
                 disable: type==='l' ? true : root.disable,
-                type: type
+                type: type,
+                fadeOpen: false,
+                log: []
               });
             };
             const eventset = (id) => {
@@ -122,7 +131,7 @@ class Main extends Component {
                 break;
               case 'l':
                 root.children.push(dataset('l', codeId));
-                this.setState(prevState => ({logics: [ ...prevState.logics, logicset('l', codeId) ] }));
+                this.setState(prevState => ({logics: [ ...prevState.logics, logicset(codeId) ] }));
                 break;
               default:
                 return null;
@@ -274,22 +283,70 @@ class Main extends Component {
   }
   onClickBlock(item) {
     if (item.type==='e') {
-      // toggle the logics in this event
-      const logics = this.state.events.filter( e => {return e.id === item.id;})[0].logics;
-      for (let i = 0; i < logics.length; i++) {
-        this.changeDisable({}, true, logics[i].id);
-      }
-
-      const component = this.state.events.filter(e => {
+      const currentEvent = this.state.events.filter(e => {
         return e.id === item.id;
-      })[0].connects;
-      this.setState({checkedComponent: component});
+      })[0];
+      // fire the linked component and logic
+      const root = [ ...this.state.data ];
+      for (let i = 0; i < currentEvent.logics.length; i++) {
+        this._editDisableNested(root, currentEvent.logics[i].id, false);
+      }
+      this._fireFade(root, currentEvent, item);
+      this.setState({data: root, checkedLogics: currentEvent.logics, checkedComponent: currentEvent.connects});
     }
     this.setState({clickNodeStatus: item});
   }
-  toggleHover(item) {
+  _fireFade(data, currentEvent, item) {
+    const root = data;
+
+    // fade out the info first
+    for (let i = 0; i < currentEvent.connects.length; i++) {
+      this._toggleFade(root, currentEvent.connects[i].id, item.name, false);
+    }
+    this.setState({data: root});
+
+    // fade in the new info
+    setTimeout(() => {
+      for (let i = 0; i < currentEvent.connects.length; i++) {
+        this._toggleFade(root, currentEvent.connects[i].id, item.name, true);
+      }
+      this.setState({data: root});
+    }, 300);
+  }
+  _toggleFade(root, targetId, log, value) {
+    if (root instanceof Array) {
+      for (var i = 0; i < root.length; i++) {
+        this._toggleFade(root[i], targetId, log, value);
+      }
+    }
+    else {
+      for (var prop in root) {
+        if (prop === 'id') {
+          if (root[prop] === targetId) {
+            const prevlog = [...root.log];
+            root.fadeOpen = value;
+            if (value===true) {
+              root.log = [...prevlog, log];
+            }
+          }
+        }
+        if (prop === 'children') {
+          if (root[prop].length > 0) {
+            for (let j = 0; j < root[prop].length; j++) {
+              this._toggleFade(root[prop][j], targetId, log, value);
+            }
+          }
+        }
+      }
+    }
+  }
+  toggleHover(item, value) {
     if (item.type==='e') {
-      this.setState(prevState => ({ hoverId: prevState.hoverId===false ? item.id : false }));
+      if (value===true) {
+        this.setState({hoverId: item.id});
+      } else {
+        this.setState({hoverId: false})
+      }
     }
   }
   toggleConnect() {
@@ -298,46 +355,85 @@ class Main extends Component {
   closeConnectModal() {
     this.setState({connectModalOpen: false});
   }
-  toggleComponent(item) {
-    const { checkedComponent } = this.state;
+  toggleComponent(item, type) {
+    const { checkedComponent, checkedLogics } = this.state;
     const eventId = this.state.clickNodeStatus.id;
     const eventIndex = this.state.events.map(e => {
       return e.id;
     }).indexOf(eventId);
-    const currentIndex = checkedComponent.map( c => {
-        return c.id;
-    }).indexOf(item.id);
-    const newConnects = [...this.state.events[eventIndex].connects];
-    // const currentPathSet = [...this.state.events[eventIndex].pathSet];
 
-    if (currentIndex === -1) {
-      newConnects.push({
-        id: item.id,
-        name: item.name
-      });
+    if (type==='component') {
+      const currentIndex = checkedComponent.map( c => {
+          return c.id;
+      }).indexOf(item.id);
+      const newConnects = [...this.state.events[eventIndex].connects];
 
-      const newevents = this.state.events.map(e => {
-        if (e.id===eventId) {
-          return ({ ...e, connects: [...newConnects]});
-        } else {
-          return ({ ...e});
-        }
-      });
+      if (currentIndex === -1) {
+        newConnects.push({
+          id: item.id,
+          name: item.name
+        });
 
-      this.setState({events: newevents, checkedComponent: newConnects});
+        const newevents = this.state.events.map(e => {
+          if (e.id===eventId) {
+            return ({ ...e, connects: [...newConnects]});
+          } else {
+            return ({ ...e});
+          }
+        });
+
+        this.setState({events: newevents, checkedComponent: newConnects});
+      }
+      else {
+        newConnects.splice(currentIndex, 1);
+        // currentPathSet.splice(currentIndex, 1);
+        const newevents = this.state.events.map(e => {
+          if (e.id===eventId) {
+            return ({ ...e, connects: [...newConnects]});
+          } else {
+            return ({ ...e});
+          }
+        });
+
+        this.setState({events: newevents, checkedComponent: newConnects});
+      }
     }
+    // for logic
     else {
-      newConnects.splice(currentIndex, 1);
-      // currentPathSet.splice(currentIndex, 1);
-      const newevents = this.state.events.map(e => {
-        if (e.id===eventId) {
-          return ({ ...e, connects: [...newConnects]});
-        } else {
-          return ({ ...e});
-        }
-      });
+      const currentIndex = checkedLogics.map( l => {
+          return l.id;
+      }).indexOf(item.id);
+      const newlogics = [...this.state.events[eventIndex].logics];
 
-      this.setState({events: newevents, checkedComponent: newConnects});
+      if (currentIndex === -1) {
+        newlogics.push({
+          id: item.id,
+          name: item.name
+        });
+
+        const newevents = this.state.events.map(e => {
+          if (e.id===eventId) {
+            return ({ ...e, logics: [...newlogics]});
+          } else {
+            return ({ ...e});
+          }
+        });
+
+        this.setState({events: newevents, checkedLogics: newlogics});
+      }
+      else {
+        newlogics.splice(currentIndex, 1);
+        // currentPathSet.splice(currentIndex, 1);
+        const newevents = this.state.events.map(e => {
+          if (e.id===eventId) {
+            return ({ ...e, logics: [...newlogics]});
+          } else {
+            return ({ ...e});
+          }
+        });
+
+        this.setState({events: newevents, checkedLogics: newlogics});
+      }
     }
   }
   toggleChangeName() {
@@ -378,12 +474,14 @@ class Main extends Component {
       }
       this.setState({data: root, events: events, logics: newlogics});
     }
-    //delete the events
-    else {
+    else if (this.state.clickNodeStatus.type==='e') {
       const events = [...this.state.events];
       const tIndex = events.map(e => { return e.id; }).indexOf(targetId);
       events[tIndex].name = newName;
       this.setState({data: root, events: events});
+    }
+    else {
+      this.setState({data: root});
     }
   }
   _editNameinNested(root, targetId, newName) {
@@ -459,47 +557,67 @@ class Main extends Component {
       }
     }
   }
+  componentDidUpdate() {
+    // save the root tree in cookie
+    const name = this.state.dataType;
+    const value = {...this.state}
+    console.log(value);
+    Cookies.set(name, value, {domain: null});
+  }
+  componentDidMount() {
+    // load the root tree if user has made one before
+    const name = this.state.dataType;
+    const value = Cookies.getJSON(name);
+    if (value) {
+      console.log(value);
+      this.setState({...value});
+    }
+  }
   render() {
     return (
-      <div className='main-container'>
-        <LeftContainer
-          classes={this.props.classes}
-          render={this.props.render}
-          direction={this.props.direction}
-          data={this.state.data}
-          clickNodeStatus={this.state.clickNodeStatus}
-          toggleHover={this.toggleHover}
-          hoverId={this.state.hoverId}
-          onClickBlock={(item) => this.onClickBlock(item)}
-          events={this.state.events}
+      <React.Fragment>
+        <Header />
+        <div className='main-container'>
+          <LeftContainer
+            classes={this.props.classes}
+            render={this.props.render}
+            direction={this.props.direction}
+            data={this.state.data}
+            clickNodeStatus={this.state.clickNodeStatus}
+            toggleHover={this.toggleHover}
+            hoverId={this.state.hoverId}
+            onClickBlock={(item) => this.onClickBlock(item)}
+            events={this.state.events}
+          />
+          {this.state.clickNodeStatus ?
+            <RightContainer
+              item={this.state.clickNodeStatus}
+              checkedC={this.state.checkedComponent}
+              addNode={this.addNode}
+              connect={this.toggleConnect}
+              deleteNode={this.deleteNode}
+              toggleChangeName={this.toggleChangeName}
+              changeDisable={this.changeDisable}
+            /> : null
+          }
+          <ConnectModal
+            open={this.state.connectModalOpen}
+            handleClose={this.closeConnectModal}
+            components={this.state.components}
+            logics={this.state.logics}
+            checkedCId={this.state.checkedComponent.map(c => {return c.id;})}
+            checkedLId={this.state.checkedLogics.map(l => {return l.id;})}
+            toggleCheck={this.toggleComponent}
+          />
+        <EditNameModal
+          open={this.state.editNameOpen}
+          handleClose={this.toggleChangeName}
+          name={this.state.clickNodeStatus.name}
+          type={this.state.clickNodeStatus.type}
+          changeName={this.changeName}
         />
-        {this.state.clickNodeStatus ?
-          <RightContainer
-            item={this.state.clickNodeStatus}
-            checkedC={this.state.checkedComponent}
-            addNode={this.addNode}
-            connect={this.toggleConnect}
-            deleteNode={this.deleteNode}
-            toggleChangeName={this.toggleChangeName}
-            changeDisable={this.changeDisable}
-          /> : null
-        }
-        <ConnectModal
-          open={this.state.connectModalOpen}
-          alert={this.state.components.length < 1}
-          handleClose={this.closeConnectModal}
-          components={this.state.components}
-          checkedId={this.state.checkedComponent.map(c => {return c.id;})}
-          toggleCheck={this.toggleComponent}
-        />
-      <EditNameModal
-        open={this.state.editNameOpen}
-        handleClose={this.toggleChangeName}
-        name={this.state.clickNodeStatus.name}
-        type={this.state.clickNodeStatus.type}
-        changeName={this.changeName}
-      />
-      </div>
+        </div>
+      </React.Fragment>
     );
   };
 }

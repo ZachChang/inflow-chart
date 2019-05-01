@@ -201,6 +201,7 @@ export const Arrow = styled.span`
 `;
 
 export const Text = styled.span`
+  text-transform: none;
   font-family: 'Open Sans', sans-serif;
   color: '#fff';
   font-size: 12px;
