@@ -4,7 +4,7 @@ self.__precacheManifest = [
     "url": "/information-architecture-tool/static/js/runtime~main.2db9217e.js"
   },
   {
-    "revision": "9caf52a3cc7a995e1a12",
+    "revision": "7242a862f43375dd9ca3",
     "url": "/information-architecture-tool/static/js/main.969a7d93.chunk.js"
   },
   {
@@ -12,11 +12,11 @@ self.__precacheManifest = [
     "url": "/information-architecture-tool/static/js/2.e8e54dbd.chunk.js"
   },
   {
-    "revision": "9caf52a3cc7a995e1a12",
-    "url": "/information-architecture-tool/static/css/main.85c9478b.chunk.css"
+    "revision": "7242a862f43375dd9ca3",
+    "url": "/information-architecture-tool/static/css/main.be9b93ce.chunk.css"
   },
   {
-    "revision": "edcea571084ce7bb028b90e13861f201",
+    "revision": "1e5ff7c5dbae45ff7567c6ebf6e0f915",
     "url": "/information-architecture-tool/index.html"
   }
 ];
