@@ -31,7 +31,7 @@ class Header extends Component {
             </div>
             <div>
               <Button className={classes.hbtn} color="inherit">About</Button>
-              <Button className={classes.hbtn} color="inherit">Git hub</Button>
+              <Button className={classes.hbtn} color="inherit" onClick={()=> window.open("https://github.com/ZachChang/information-architecture-tool", "_blank")} >Git hub</Button>
             </div>
           </Toolbar>
         </AppBar>
