@@ -43,11 +43,11 @@
   flex-direction: column;
 }
 .add-button {
-  font-size: 12px;
-  color: white;
-  margin-bottom: 10px;
-  padding: 15px 0;
-  letter-spacing: 2px;
+  font-size: 12px !important;
+  color: white !important;
+  margin-bottom: 10px !important;
+  padding: 15px 0 !important;
+  letter-spacing: 2px !important;
 }
 .delete-btn {
   margin-top: 50px;
@@ -86,7 +86,7 @@
   overflow-y: scroll;
 }
 .test { position: absolute;}
-.page-color { border-color: #b3e5fc; }
-.event-color { border-color: #ffe0b2; }
-.component-color { border-color: #c8e6c9; }
-.logic-color { border-color: #f06292; }
+.page-color { border-color: #b3e5fc !important; }
+.event-color { border-color: #ffe0b2 !important; }
+.component-color { border-color: #c8e6c9 !important; }
+.logic-color { border-color: #f06292 !important; }
