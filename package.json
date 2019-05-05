@@ -19,7 +19,7 @@
     "react-with-firebase-auth": "^1.0.2",
     "styled-components": "^4.2.0"
   },
-  "homepage": "https://ZachChang.github.io/information-architecture-tool/",
+  "homepage": "https://ZachChang.github.io/information-architecture-tool",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
