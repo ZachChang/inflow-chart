@@ -19,16 +19,15 @@ const styles= {
 
 class Header extends Component {
   render() {
-    const {classes} = this.props;
+    const {classes, loadTemp} = this.props;
     return (
       <div>
-        <AppBar position="static">
+        <AppBar position="fixed">
           <Toolbar className={classes.toolbar}>
             <div>
-              <Button className={classes.hbtn} color="inherit">air bnb</Button>
-              <Button className={classes.hbtn} color="inherit">Spotify</Button>
-              <Button className={classes.hbtn} color="inherit">Youtube</Button>
-              <Button className={classes.hbtn} color="inherit">Basic set</Button>
+              <Button className={classes.hbtn} color="inherit" onClick={() => {loadTemp('airbnb')}}>air bnb</Button>
+              <Button className={classes.hbtn} color="inherit" onClick={() => {loadTemp('spotify')}}>Spotify</Button>
+              <Button className={classes.hbtn} color="inherit" onClick={() => {loadTemp('basic')}}>Basic set</Button>
             </div>
             <div>
               <Button className={classes.hbtn} color="inherit">About</Button>

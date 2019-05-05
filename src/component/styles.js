@@ -225,7 +225,7 @@ export const Root = styled.ul`
     top: 0;
     left: calc( 50% - ${props => calcWidth(props.styles.width)});
     border-left: 1px solid ${props => (props.disabledstyle ? '#696969' : '#149867')};
-    width: 0;
+    width: 1px;
     height: ${props => props.styles.height || '40px'};
   }
 `;

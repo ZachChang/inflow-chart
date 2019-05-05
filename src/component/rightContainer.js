@@ -39,7 +39,7 @@ const RightContainer = (props) => {
                         <Button variant="outlined" className='add-button page-color' onClick={() => {props.addNode('p')}}>Add Page</Button>
                         <Button variant="outlined" className='add-button event-color' onClick={() => {props.addNode('e')}}>Add Event</Button>
                         <Button variant="outlined" className='add-button component-color' onClick={() => {props.addNode('c')}}>Add Component</Button>
-                        <Button variant="outlined" className='add-button logic-color' onClick={() => {props.addNode('l')}}>Add Logic</Button>
+                        <Button variant="outlined" className='add-button logic-color' onClick={() => {props.addNode('l')}}>Add  Decision</Button>
                       </div>
                       {props.item.parent === null ? null :
                         <Button className='delete-btn' variant="contained" color="secondary" onClick={props.deleteNode}>Delete</Button>
@@ -50,6 +50,9 @@ const RightContainer = (props) => {
                       <div className='name'>
                         {props.item.name}
                         <EditIcon className='icon' onClick={props.toggleChangeName}></EditIcon>
+                      </div>
+                      <div className='message' onClick={props.toggleChangeMessage}>
+                        {props.item.message}
                       </div>
                       <div className='button-container'>
                         <Button variant="outlined" className='add-button component-color' onClick={props.connect}>Connect</Button>
@@ -75,6 +78,12 @@ const RightContainer = (props) => {
                       <div className='name'>
                         {props.item.name}
                         <EditIcon className='icon' onClick={props.toggleChangeName}></EditIcon>
+                      </div>
+                      <div className='button-container'>
+                        <Button variant="outlined" className='add-button page-color' onClick={() => {props.addNode('p')}}>Add Page</Button>
+                        <Button variant="outlined" className='add-button event-color' onClick={() => {props.addNode('e')}}>Add Event</Button>
+                        <Button variant="outlined" className='add-button component-color' onClick={() => {props.addNode('c')}}>Add Component</Button>
+                        <Button variant="outlined" className='add-button logic-color' onClick={() => {props.addNode('l')}}>Add  Decision</Button>
                       </div>
                       {props.item.log.length > 0 &&
                         <div>
@@ -113,7 +122,7 @@ const RightContainer = (props) => {
                             value="checkedB"
                           />
                         }
-                        label={'Logic: ' + !props.item.disable}
+                        label={' Decision: ' + !props.item.disable}
                       />
                       <div className='button-container'>
                         <Button variant="outlined" className='add-button page-color' onClick={() => {props.addNode('p')}}>Add Page</Button>

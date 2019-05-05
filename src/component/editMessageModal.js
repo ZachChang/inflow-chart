@@ -6,8 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 
-const EditNameModal = (props) => {
-  const type = props.type === 'p' ? 'page' : props.type === 'e' ? 'event' : 'component';
+const EditMessageModal = (props) => {
   return (
     <Dialog
       open={props.open}
@@ -16,13 +15,13 @@ const EditNameModal = (props) => {
       aria-describedby="alert-dialog-description"
     >
       <React.Fragment>
-        <DialogTitle id="alert-dialog-title">Rename this {type}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Edit the information from this event</DialogTitle>
         <DialogContent>
           <TextField
             id="outlined-name"
-            label="Name"
-            value={props.name}
-            onChange={props.changeName}
+            label="Information"
+            value={props.message}
+            onChange={props.changeMessage}
             margin="normal"
             variant="outlined"
             fullWidth={true}
@@ -38,4 +37,4 @@ const EditNameModal = (props) => {
   )
 }
 
-export default EditNameModal;
+export default EditMessageModal;

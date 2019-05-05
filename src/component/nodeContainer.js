@@ -27,7 +27,6 @@ class NodeContainer extends Component {
 
 
       for (let i = 0; i < events.length; i++) {
-        console.log(events[i]);
         for (let k = 0; k < events[i].connects.length; k++) {
           const path = _detect(events[i].id, events[i].connects[k].id);
           if (events[i].id === clickId || events[i].id === hoverId) {

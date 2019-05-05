@@ -5,26 +5,15 @@ import RightContainer from './rightContainer';
 import LeftContainer from './leftContainer';
 import ConnectModal from './connectModal';
 import EditNameModal from './editNameModal';
+import EditMessageModal from './editMessageModal';
 import Cookies from 'js-cookie';
+import { spotifySet } from '../example/spotify';
+import { airbnbSet } from '../example/airbnb';
+import { basicSet } from '../example/basic';
 
-const initRoot = [
-  {id: 'a1', name: 'homepage', parent: null, type: 'p', disable: false, fadeOpen: false, children: [
-    {id: 'b1', parent: {id: 'a1'}, name: 'page01', type: 'p', disable: false, fadeOpen: false, children: []},
-    {id: 'b2', parent: {id: 'a1'}, name: 'page02', type: 'p', disable: false, fadeOpen: false, children: [
-      {id: 'c1', parent: {id: 'b2'}, name: 'page02-1', type: 'p', disable: false, fadeOpen: false, children: []},
-      {id: 'c2', parent: {id: 'b2'}, name: 'component1', type: 'c', disable: false, fadeOpen: false, children: [], log: []}
-    ]},
-    {id: 'b3', parent: {id: 'a1'}, name: 'page03', type: 'p', disable: false, fadeOpen: false, children: []},
-    {id:'b4', parent: {id: 'a1'}, name: 'page04', type: 'p', disable: false, fadeOpen: false, children: []},
-    {id:'b5', parent: {id: 'a1'}, name: 'event1', type: 'e', disable: false, fadeOpen: false, children: []}
-  ]}
-];
-const initEvents = [
-  {id: 'b5', name: 'event1', connects: [], logics: []}
-];
-const initComponents = [
-  {id: 'c2', parent: {id: 'b2'}, name: 'component1', type: 'c', children: []}
-];
+const spotify = spotifySet;
+const airbnb = airbnbSet;
+const baisc = basicSet;
 
 class Main extends Component {
   constructor() {
@@ -41,26 +30,91 @@ class Main extends Component {
     this.toggleChangeName = this.toggleChangeName.bind(this);
     this._editNameinNested = this._editNameinNested.bind(this);
     this.changeName = this.changeName.bind(this);
+
+    this.toggleChangeMessage = this.toggleChangeMessage.bind(this);
+    this._editMessageinNested = this._editMessageinNested.bind(this);
+    this.changeMessage = this.changeMessage.bind(this);
+
     this.changeDisable = this.changeDisable.bind(this);
     this._editDisableNested = this._editDisableNested.bind(this);
     this._removeCandL = this._removeCandL.bind(this);
     this._toggleFade = this._toggleFade.bind(this);
     this._fireFade = this._fireFade.bind(this);
+    this.loadTemp = this.loadTemp.bind(this);
 
     this.state = {
-      data: initRoot,
-      dataType: 'init',
-      events: initEvents,
-      components: initComponents,
-      logics: [],
-      clickNodeStatus: initRoot[0],
+      data: baisc.data,
+      dataType: baisc.dataType,
+      events: baisc.events,
+      components: baisc.components,
+      logics: baisc.logics,
+      clickNodeStatus: baisc.clickNodeStatus,
       connectModalOpen: false,
       editNameOpen: false,
+      editMessageOpen: false,
       deleteAlertOpen: false,
-      checkedComponent: [],
-      checkedLogics: [],
+      checkedComponent: baisc.checkedComponent,
+      checkedLogics: baisc.checkedLogics,
       hoverId: false
     };
+  }
+
+  loadTemp(type) {
+    switch (type) {
+      case 'spotify':
+        this.setState({
+          data: spotify.data,
+          dataType: spotify.dataType,
+          events: spotify.events,
+          components: spotify.components,
+          logics: spotify.logics,
+          clickNodeStatus: spotify.clickNodeStatus,
+          connectModalOpen: false,
+          editNameOpen: false,
+          editMessageOpen: false,
+          deleteAlertOpen: false,
+          checkedComponent: spotify.checkedComponent,
+          checkedLogics: spotify.checkedLogics,
+          hoverId: false
+        });
+        break;
+      case 'airbnb':
+        this.setState({
+          data: airbnb.data,
+          dataType: airbnb.dataType,
+          events: airbnb.events,
+          components: airbnb.components,
+          logics: airbnb.logics,
+          clickNodeStatus: airbnb.clickNodeStatus,
+          connectModalOpen: false,
+          editNameOpen: false,
+          editMessageOpen: false,
+          deleteAlertOpen: false,
+          checkedComponent: airbnb.checkedComponent,
+          checkedLogics: airbnb.checkedLogics,
+          hoverId: false
+        });
+        break;
+      case 'basic':
+        this.setState({
+          data: baisc.data,
+          dataType: baisc.dataType,
+          events: baisc.events,
+          components: baisc.components,
+          logics: baisc.logics,
+          clickNodeStatus: baisc.clickNodeStatus,
+          connectModalOpen: false,
+          editNameOpen: false,
+          editMessageOpen: false,
+          deleteAlertOpen: false,
+          checkedComponent: baisc.checkedComponent,
+          checkedLogics: baisc.checkedLogics,
+          hoverId: false
+        });
+        break;
+      default:
+        return null;
+    }
   }
   addNode(type) {
     const targetId = this.state.clickNodeStatus.id
@@ -96,7 +150,8 @@ class Main extends Component {
                 disable: type==='l' ? true : root.disable,
                 type: type,
                 fadeOpen: false,
-                log: []
+                log: [],
+                message: 'Information from this event'
               });
             };
             const eventset = (id) => {
@@ -301,14 +356,14 @@ class Main extends Component {
 
     // fade out the info first
     for (let i = 0; i < currentEvent.connects.length; i++) {
-      this._toggleFade(root, currentEvent.connects[i].id, item.name, false);
+      this._toggleFade(root, currentEvent.connects[i].id, item.message, false);
     }
     this.setState({data: root});
 
     // fade in the new info
     setTimeout(() => {
       for (let i = 0; i < currentEvent.connects.length; i++) {
-        this._toggleFade(root, currentEvent.connects[i].id, item.name, true);
+        this._toggleFade(root, currentEvent.connects[i].id, item.message, true);
       }
       this.setState({data: root});
     }, 300);
@@ -508,6 +563,42 @@ class Main extends Component {
       }
     }
   }
+
+  toggleChangeMessage() {
+    this.setState(prevState => ({editMessageOpen: !prevState.editMessageOpen}));
+  }
+  changeMessage(event) {
+    const targetId = this.state.clickNodeStatus.id;
+    const root = [ ...this.state.data ];
+    const newMessage = event.target.value;
+    this._editMessageinNested(root, targetId, newMessage);
+    this.setState({data: root});
+  }
+  _editMessageinNested(root, targetId, newMessage) {
+    if (root instanceof Array) {
+      for (var i = 0; i < root.length; i++) {
+        this._editMessageinNested(root[i], targetId, newMessage);
+      }
+    }
+    else {
+      for (var prop in root) {
+        if (prop === 'id') {
+          if (root[prop] === targetId) {
+            root.message = newMessage;
+          }
+        }
+        if (prop === 'children') {
+          if (root[prop].length > 0) {
+            for (var j = 0; j < root[prop].length; j++) {
+              this._editMessageinNested(root[prop][j], targetId, newMessage);
+            }
+          }
+        }
+      }
+    }
+  }
+
+
   changeDisable(e, boolean, id) {
     const targetId = id !== undefined ? id : this.state.clickNodeStatus.id;
     const root = [ ...this.state.data ];
@@ -561,7 +652,6 @@ class Main extends Component {
     // save the root tree in cookie
     const name = this.state.dataType;
     const value = {...this.state}
-    console.log(value);
     Cookies.set(name, value, {domain: null});
   }
   componentDidMount() {
@@ -569,14 +659,15 @@ class Main extends Component {
     const name = this.state.dataType;
     const value = Cookies.getJSON(name);
     if (value) {
-      console.log(value);
       this.setState({...value});
     }
+
+    this.loadTemp('basic');
   }
   render() {
     return (
-      <React.Fragment>
-        <Header />
+      <div className='main-body'>
+        <Header loadTemp={this.loadTemp}/>
         <div className='main-container'>
           <LeftContainer
             classes={this.props.classes}
@@ -597,6 +688,7 @@ class Main extends Component {
               connect={this.toggleConnect}
               deleteNode={this.deleteNode}
               toggleChangeName={this.toggleChangeName}
+              toggleChangeMessage={this.toggleChangeMessage}
               changeDisable={this.changeDisable}
             /> : null
           }
@@ -609,15 +701,21 @@ class Main extends Component {
             checkedLId={this.state.checkedLogics.map(l => {return l.id;})}
             toggleCheck={this.toggleComponent}
           />
-        <EditNameModal
-          open={this.state.editNameOpen}
-          handleClose={this.toggleChangeName}
-          name={this.state.clickNodeStatus.name}
-          type={this.state.clickNodeStatus.type}
-          changeName={this.changeName}
-        />
+          <EditNameModal
+            open={this.state.editNameOpen}
+            handleClose={this.toggleChangeName}
+            name={this.state.clickNodeStatus.name}
+            type={this.state.clickNodeStatus.type}
+            changeName={this.changeName}
+          />
+        <EditMessageModal
+            open={this.state.editMessageOpen}
+            handleClose={this.toggleChangeMessage}
+            message={this.state.clickNodeStatus.message}
+            changeMessage={this.changeMessage}
+          />
         </div>
-      </React.Fragment>
+      </div>
     );
   };
 }

@@ -76,7 +76,7 @@ class ConnectModal extends Component {
                     ))}
                   </List> :
                   <div>
-                    <p>Please at least add one Logic to be connect. You can add Logic in "Page" block.</p>
+                    <p>Please at least add one Decision to be connect. You can add Decision in "Page" block.</p>
                   </div>
                 }
               </React.Fragment>
