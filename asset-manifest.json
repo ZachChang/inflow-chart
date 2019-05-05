@@ -1,5 +1,5 @@
 {
-  "main.css": "/information-architecture-tool/static/css/main.3b0a5468.chunk.css",
+  "main.css": "/information-architecture-tool/static/css/main.85c9478b.chunk.css",
   "main.js": "/information-architecture-tool/static/js/main.969a7d93.chunk.js",
   "main.js.map": "/information-architecture-tool/static/js/main.969a7d93.chunk.js.map",
   "runtime~main.js": "/information-architecture-tool/static/js/runtime~main.2db9217e.js",
@@ -7,7 +7,7 @@
   "static/js/2.e8e54dbd.chunk.js": "/information-architecture-tool/static/js/2.e8e54dbd.chunk.js",
   "static/js/2.e8e54dbd.chunk.js.map": "/information-architecture-tool/static/js/2.e8e54dbd.chunk.js.map",
   "index.html": "/information-architecture-tool/index.html",
-  "precache-manifest.bfae98923285f4222db5ccc7f5eadbd3.js": "/information-architecture-tool/precache-manifest.bfae98923285f4222db5ccc7f5eadbd3.js",
+  "precache-manifest.c2b93c3c55a90bd84ea321f0f1088e3d.js": "/information-architecture-tool/precache-manifest.c2b93c3c55a90bd84ea321f0f1088e3d.js",
   "service-worker.js": "/information-architecture-tool/service-worker.js",
-  "static/css/main.3b0a5468.chunk.css.map": "/information-architecture-tool/static/css/main.3b0a5468.chunk.css.map"
+  "static/css/main.85c9478b.chunk.css.map": "/information-architecture-tool/static/css/main.85c9478b.chunk.css.map"
 }
