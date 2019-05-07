@@ -1,13 +1,13 @@
 {
-  "main.css": "/information-architecture-tool/static/css/main.be9b93ce.chunk.css",
-  "main.js": "/information-architecture-tool/static/js/main.969a7d93.chunk.js",
-  "main.js.map": "/information-architecture-tool/static/js/main.969a7d93.chunk.js.map",
-  "runtime~main.js": "/information-architecture-tool/static/js/runtime~main.2db9217e.js",
-  "runtime~main.js.map": "/information-architecture-tool/static/js/runtime~main.2db9217e.js.map",
-  "static/js/2.e8e54dbd.chunk.js": "/information-architecture-tool/static/js/2.e8e54dbd.chunk.js",
-  "static/js/2.e8e54dbd.chunk.js.map": "/information-architecture-tool/static/js/2.e8e54dbd.chunk.js.map",
-  "index.html": "/information-architecture-tool/index.html",
-  "precache-manifest.6395bdb15d96e40205a35dcaa1f55919.js": "/information-architecture-tool/precache-manifest.6395bdb15d96e40205a35dcaa1f55919.js",
-  "service-worker.js": "/information-architecture-tool/service-worker.js",
-  "static/css/main.be9b93ce.chunk.css.map": "/information-architecture-tool/static/css/main.be9b93ce.chunk.css.map"
+  "main.css": "/inflow-chart/static/css/main.be9b93ce.chunk.css",
+  "main.js": "/inflow-chart/static/js/main.bf734231.chunk.js",
+  "main.js.map": "/inflow-chart/static/js/main.bf734231.chunk.js.map",
+  "runtime~main.js": "/inflow-chart/static/js/runtime~main.3793d1e0.js",
+  "runtime~main.js.map": "/inflow-chart/static/js/runtime~main.3793d1e0.js.map",
+  "static/js/2.6fd83d74.chunk.js": "/inflow-chart/static/js/2.6fd83d74.chunk.js",
+  "static/js/2.6fd83d74.chunk.js.map": "/inflow-chart/static/js/2.6fd83d74.chunk.js.map",
+  "index.html": "/inflow-chart/index.html",
+  "precache-manifest.9d586406e34d0f6dda4646323b699d9b.js": "/inflow-chart/precache-manifest.9d586406e34d0f6dda4646323b699d9b.js",
+  "service-worker.js": "/inflow-chart/service-worker.js",
+  "static/css/main.be9b93ce.chunk.css.map": "/inflow-chart/static/css/main.be9b93ce.chunk.css.map"
 }
