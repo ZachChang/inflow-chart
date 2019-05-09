@@ -16,7 +16,7 @@ self.__precacheManifest = [
     "url": "/inflow-chart/static/css/main.be9b93ce.chunk.css"
   },
   {
-    "revision": "ba76177327e5f8605e3cfa9bb6384e8b",
+    "revision": "45fbd0cb7046592d81f999d8f6c7039c",
     "url": "/inflow-chart/index.html"
   }
 ];
